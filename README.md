@@ -1,75 +1,44 @@
-# KPM Opulence — The Event Studio
-A Next.js/TypeScript product demonstration by paceIT, built on the editorial concepts in the MIT-licensed 8B florist template. Original HTML builds, licence and credits are preserved.
+# Precious Memoirs
 
-## Run locally
-Requires Node 20.9+ and npm.
-    npm ci
-    npm run dev
-Open http://localhost:3000. For production: npm run build, then npm start.
+A controlled rebrand of the existing Next.js Event Studio into a bridal boutique and personalised gifting demo for **Precious Memoirs, Block 8, Gaborone, Botswana**. Existing page structures, GSAP reveals, collection-card motion, six-step studio, management workspace, quotation editor, PDF exports, calendar and localStorage persistence are retained.
 
-## Explore the connected demo
-Click **Explore the Experience**, then **Load Example**. Continue through the six Event Studio steps and submit the fictional enquiry. The default is Romantic Proposal / Blush Elegance, flowers and candles on, balloons off, 21 November 2026 at 18:30 in Pretoria. The calculated illustrative estimate is R3,900.
-Open **View in Studio Manager**, create a quotation, edit a line item, save, download the PDF, mark accepted, and confirm booking. Open 21 November in the calendar. Clients, overview metrics, analytics and activity reflect those same records.
-Accepted quotations are locked. Duplicate quote/booking actions reuse the existing record. Catalogue changes apply only to future estimates.
-Use Settings to export a JSON backup or reset the browser demo (confirmation required).
+## Development
 
-## Routes
-- / — animated editorial homepage
-- /collections — collection overview
-- /collections/romantic-proposals, /collections/room-setups, /collections/floral-arrangements, /collections/balloon-styling, /collections/heart-boxes
-- /gallery — filtered inspiration and keyboard-accessible image dialog
-- /studio — six-step configurator with saved draft
-- /studio/review — review saved draft
-- /enquiry/success/[id] — saved enquiry reference
-- /admin — overview and activity
-- /admin/enquiries and /admin/enquiries/[id]
-- /admin/quotations and /admin/quotations/[id]
-- /admin/bookings, /admin/calendar
-- /admin/clients and /admin/clients/[id]
-- /admin/packages, /admin/analytics, /admin/settings
+Requires Node 20.9+ and npm. The cloud machine currently uses Node 24.
 
-## Persistence and security
-No credentials or paid infrastructure required. Data stays in localStorage on this browser and origin, with storage-event updates across tabs. No cross-device synchronisation. Storage errors produce visible feedback; backup before clearing browser data. Simultaneous writes are last-writer-wins, not multi-user transactions.
-Use fictional information only. There is no authentication, secure file upload, email delivery, payment processing, actual booking availability, customer tracking portal or production data endpoint.
-The MongoDB server-only adapter is an integration foundation, deliberately not exposed through routes. MONGODB_URI and MONGODB_DB are documented in .env.example. Before connecting real records, implement authenticated server sessions, tenant authorisation, validated API operations, workspace creation, conflict retry, retention/consent rules, rate limiting, backups and auditing. Client-side state must then be replaced with authorised repository calls. Merely adding an environment variable does not enable database mode.
+```sh
+cd /workspace/memoirs
+npm ci --cache /workspace/.npm-cache
+npm run dev
+```
 
-## Verify
-    npm run typecheck
-    npm run lint
-    npm test
-    npm run build
-    npx playwright install chromium
-Start the dev server in a separate terminal, then:
-    npm run test:e2e
-Tests cover price snapshots, catalogue updates, status gates, idempotency, linked records and the browser quotation/calendar journey. Browser tests use a clean context.
+No credentials, database or paid infrastructure are required. Each cloud task is already isolated; use this existing checkout without creating a worktree. Live servers must restart in new tasks.
 
-## Deploy to Vercel
-Push this folder as the project root (or set Root Directory to KPM if the containing folder is your repository). Import the Git repository in Vercel; select Next.js, install with npm ci and build with npm run build. No environment variables are needed for the browser demo. Every visitor receives isolated browser data. Use a preview deployment to verify the workflow before sharing. No deployment was created by this implementation.
-Do not enable public real-data submission until authentication and authorised persistence are implemented.
+```sh
+npm run typecheck
+npm run lint
+npm test
+npm run build
+# With the development server running and installed system Chromium:
+PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:e2e
+```
 
-## Assets and design
-See AUDIT.md for the local image manifest, original animation audit and official-business source. CREDITS.md and LICENSE retain upstream attribution. All photos are illustrative Unsplash editorial inspiration, not verified KPM work. Palette, packages and pricing are proposed demonstration designs. No official KPM photography was copied.
-Cormorant Garamond and Manrope are hosted locally (SIL Open Font License, licence files in public/fonts); system fonts are fallbacks.
-Balloon styling uses a licensed pink-and-white balloon garland inspiration photo. Classic Red Romance is a proposed direction; the available candle/floral photograph does not depict an exact red-rose room setup.
-The video hero uses native media and CSS crossfades; GSAP provides scoped editorial reveals, staggered collection-card reveals, photo-spread motion. Native scrolling is retained; Lenis was intentionally omitted. Reduced motion shows finished layouts.
+On another machine, `npx playwright install chromium` installs the default Playwright browser. Production startup is `npm run build` followed by `npm start`.
 
-## Remaining production work
-Configure business-approved prices, terms, tax, deposits and package availability; supplied brand assets and verified project imagery; authenticated MongoDB operations; delivery and messaging providers if wanted. The date defaults are presentation examples, not a live availability calendar. Demo walkthrough controls provide manual navigation, rather than automating business decisions.
+## Demo workflow
 
+Explore Collection opens five fictional gowns: Seraphina, Aurelia, Celeste, Vivienne and Elara. Choose a gown and request a consultation. Personalise a Gift opens the existing studio for robes, champagne flutes, slippers, gift boxes and bridal hangers. Names, lettering, text/product colours, motifs and quantity update a live original 2D preview.
 
-## Verification environment notes
-The managed Windows test browser cancels even minimal native Blob downloads. The default E2E test requires a successfully saved download; KPM_SANDBOX_DOWNLOAD_FALLBACK=1 explicitly enables a documented environment-only fallback that captures the exact PDF Blob bytes, checks the PDF header and saves them with the runner. The download event and filename are still checked. Native save completion must be rechecked outside this sandbox.
-npm audit --omit=dev reports zero production dependency vulnerabilities at implementation time. Eight moderate advisories remain in the development lint dependency chain (minimatch / typescript-eslint); review upstream updates before CI deployment.
+Use **Load Example** for fictional contact details. Submit a request, open it in Studio Manager, review its details or change status, create a quotation, enter a business-approved price in BWP, export a PDF, mark accepted and confirm the order in the retained calendar. Dashboard counters and linked customers update. No advertised product prices are prefilled. `On request` means pricing is unconfirmed, never a free product.
 
-## Official catalogue references
-The five homepage collections are compact cards with viewport-triggered staggered reveals, pointer-relative horizontal movement, keyboard focus treatment and reduced-motion support. The catalogue in src/lib/catalogue.ts records 12 product names from KPM’s official website, verified room-package inclusions, Heart Box contents and four quote-only room-setup extras. Package references and extras can be selected in the studio and persist into enquiry summaries and PDF exports. Official product links let customers check the source. No official fixed prices were supplied by these pages; existing demo estimates remain illustrative. The former /collections/bespoke-celebrations link is retained as an alias for the gift-box collection.
+Routes remain `/collections`, `/collections/seraphina` (and the other four names), `/gallery`, `/studio`, `/studio/review`, `/enquiry/success/[id]` and `/admin` with enquiries, quotations, bookings, calendar, clients, packages, analytics and settings. Original collection URLs remain compatibility aliases. Existing management URLs are retained with rebranded labels.
 
-## Cinematic homepage
-Three original 3840×2160 Pexels stock clips replace the earlier soft 1080p reference videos. The selected scenes show an ivory floral venue, a detailed rose close-up and a styled celebration table. They were visually inspected and their encoded dimensions checked in the browser; no upscaling or recompression was used. See public/videos/manifest.json and CREDITS.md for author/source/licence details.
-Automatic 8-second rotation, 1.2-second crossfades, pause/resume, hidden-tab/offscreen suspension and reduced-motion posters remain supported. These are inspiration scenes, not KPM project footage. The 4K originals prioritise quality and are large assets; a production video CDN with adaptive delivery can provide lower-bandwidth variants.
+## Assets and remaining work
 
-## Sharing and icons
-The branded share card is served at /opengraph-image.png (1200×630), with Open Graph and large Twitter-card metadata. /favicon.ico contains 16/32/48px variants; /icon.png is 512px and /apple-icon.png is 180px.
-For a custom production domain, set NEXT_PUBLIC_SITE_URL to its full HTTPS origin. Vercel's production project URL is detected automatically; localhost is only a development fallback. Social platforms may retain an older cached preview after deployment.
+The homepage uses three original free Pexels 3840×2160 wedding videos already included in the repository, with credited sources in `public/videos/manifest.json` and CREDITS.md. Mobile retains smaller video variants. Rotation, crossfades, pause/resume, offscreen suspension and reduced-motion posters are preserved. These are stock inspiration, not business footage.
 
-Mobile performance refinement: phones use dedicated 1080×1920 H.264 fast-start clips (6.26 MB, 3.82 MB, 3.60 MB) instead of the 4K masters (28.13 MB, 47.80 MB, 26.89 MB), about 87% less combined video data. Desktop retains the original 4K. Only the active clip preloads; reduced-motion/data-saver visitors receive a poster until they opt into playback. Mobile WebP posters, 44px controls and 16px studio inputs improve loading, touch and iOS behaviour.
+Playfair Display and Montserrat are hosted locally with their SIL OFL licences. The wordmark is text because the referenced WhatsApp logo screenshot was not supplied. Gown visuals and gift previews are **original, explicitly labelled illustrations**, pending licensed bridal/product photography. The current network policy blocks images.unsplash.com; the environment configuration service also failed to confirm draft persistence. No external stock photos were fetched through an alternate route.
+
+Products and names are fictional, with no confirmed inventory, advertised prices or appointment availability. The request demo stores data only in this browser/origin, using a separate Precious Memoirs storage key without deleting old application data. No email, WhatsApp messaging, payment, authentication or cross-device database integration is connected. Use fictional information. Backup/reset controls remain available. The server-only MongoDB adapter is an unused integration foundation, not a live backend.
+
+Original template HTML, LICENSE and historical credits are retained for provenance. See CREDITS.md for asset attribution. The social card and icon now use the Precious Memoirs text identity. Deployment settings and application architecture remain unchanged.

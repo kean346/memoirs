@@ -171,9 +171,9 @@ export default function VideoHero() {
       <div className="cinema-content">
         <div className="cinema-topline">
           <p className="eyebrow">
-            EVENTS & FLORAL EXPERIENCES
+            BRIDAL BOUTIQUE & PERSONALISED GIFTS
             <br />
-            <span>KPM OPULENCE / THE EVENT STUDIO</span>
+            <span>PRECIOUS MEMOIRS / GABORONE</span>
           </p>
           <div className="cinema-status">
             <i />
@@ -201,23 +201,23 @@ export default function VideoHero() {
         <div className="cinema-bottom">
           <h1
             id="cinema-title"
-            aria-label="KPM Opulence. Your moment, beautifully imagined."
+            aria-label="Every Detail. A Precious Memory."
           >
-            <span>KPM</span>
+            <span>Precious</span>
             <span>
-              Opulence<em>.</em>
+              Memoirs<em>.</em>
             </span>
-            <span className="sr-only">Your moment, beautifully imagined.</span>
+            <span className="sr-only">Every Detail. A Precious Memory.</span>
           </h1>
           <div className="cinema-intro">
-            <p className="eyebrow">YOUR MOMENT, BEAUTIFULLY IMAGINED.</p>
+            <p className="eyebrow">EVERY DETAIL. A PRECIOUS MEMORY.</p>
             <p>
-              Romantic settings. Thoughtful florals. Celebrations that feel
-              entirely yours. Let’s make your next moment extraordinary.
+              Timeless bridal elegance and personalised details for life’s most unforgettable moments.
             </p>
-            <Link className="cinema-cta" href="/studio">
-              Design Your Experience <ArrowUpRight size={20} />
+            <Link className="cinema-cta" href="/collections">
+              Explore Collection <ArrowUpRight size={20} />
             </Link>
+            <Link className="text-link" href="/studio?request=gift">Personalise a Gift <ArrowUpRight size={16} /></Link>
           </div>
         </div>
         <div className="cinema-foot">

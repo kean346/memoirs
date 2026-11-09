@@ -1,40 +1,21 @@
 import { z } from "zod";
-export const occasions = [
-  "Romantic Proposal",
-  "Luxury Room Setup",
-  "Birthday Celebration",
-  "Floral Arrangement",
-  "Custom Event",
-];
-export const styles = [
-  "Blush Elegance",
-  "Ivory Luxe",
-  "Timeless Romance",
-  "Champagne Celebration",
-  "Classic Red Romance",
-  "Custom Inspiration",
-];
-export const money = (c: number) =>
-  new Intl.NumberFormat("en-ZA", {
-    style: "currency",
-    currency: "ZAR",
-    maximumFractionDigits: 0,
-  }).format(c / 100);
+export const occasions = ["Bridal Consultation", "Personalised Gift"];
+export const styles = ["Ivory Elegance", "Blush Romance", "Champagne Grace", "Dusty Rose", "Burgundy Detail", "Timeless Minimal"];
+export const money = (c: number) => c === 0 ? "On request" : new Intl.NumberFormat("en-BW", { style: "currency", currency: "BWP", maximumFractionDigits: 2 }).format(c / 100);
 export type Item = { name: string; qty: number; price: number };
 export type Package = { name: string; price: number; enabled: boolean };
 export type Config = {
   occasion: string;
+  gown: string;
+  product: string;
+  lettering: string;
+  textColour: string;
+  productColour: string;
+  motif: string;
+  quantity: number;
   officialPackage?: string;
   extras?: string[];
   style: string;
-  flowers: boolean;
-  balloons: boolean;
-  candles: boolean;
-  petals: boolean;
-  backdrop: string;
-  flowerType: string;
-  balloonType: string;
-  candleType: string;
   date: string;
   time: string;
   location: string;
@@ -52,23 +33,22 @@ export type Config = {
 };
 export const initial: Config = {
   occasion: occasions[0],
+  gown: "Seraphina — Classic Satin",
+  product: "Bridal robe",
+  lettering: "Playfair Display",
+  textColour: "#713F4A",
+  productColour: "#FAF5F0",
+  motif: "None",
+  quantity: 1,
   officialPackage: "",
   extras: [],
   style: styles[0],
-  flowers: true,
-  balloons: false,
-  candles: true,
-  petals: false,
-  backdrop: "None",
-  flowerType: "Blush roses",
-  balloonType: "Balloon garland",
-  candleType: "Romantic candle arrangement",
   date: "2026-11-21",
   time: "18:30",
-  location: "Pretoria, Gauteng",
+  location: "Block 8, Gaborone, Botswana",
   venue: "Indoor",
   guests: 2,
-  budget: "R3,000–R5,000",
+  budget: "Let’s discuss",
   name: "",
   email: "",
   phone: "",
@@ -83,32 +63,17 @@ export const example: Config = {
   name: "Lerato Mokoena",
   email: "lerato@example.com",
   phone: "DEMO ONLY",
+  message: "Sarah",
   consent: true,
 };
 export const defaults: Package[] = [
-  ...occasions.map((name, i) => ({
-    name,
-    price: [250000, 200000, 180000, 65000, 250000][i],
-    enabled: true,
-  })),
-  { name: "Floral styling", price: 95000, enabled: true },
-  { name: "Balloon styling", price: 80000, enabled: true },
-  { name: "Candle styling", price: 45000, enabled: true },
-  { name: "Rose petals", price: 25000, enabled: true },
+  ...occasions.map(name => ({ name, price: 0, enabled: true })),
+  ...["Bridal robe", "Champagne flute", "Bridal slippers", "Gift box", "Personalised bridal hanger"].map(name => ({ name, price: 0, enabled: true })),
 ];
 export function estimate(c: Config, p: Package[]): Item[] {
-  const names = [
-    c.occasion,
-    ...(c.flowers ? ["Floral styling"] : []),
-    ...(c.balloons ? ["Balloon styling"] : []),
-    ...(c.candles ? ["Candle styling"] : []),
-    ...(c.petals ? ["Rose petals"] : []),
-  ];
-  return names.map((name) => ({
-    name,
-    qty: 1,
-    price: p.find((p) => p.name === name && p.enabled)?.price ?? 0,
-  }));
+  const gift = c.occasion === "Personalised Gift";
+  const name = gift ? c.product : c.gown;
+  return [{ name, qty: gift ? c.quantity : 1, price: p.find(p => p.name === name && p.enabled)?.price ?? 0 }];
 }
 export function totals(items: Item[], charge = 0, discount = 0, tax = 0) {
   const net = Math.max(
@@ -118,6 +83,15 @@ export function totals(items: Item[], charge = 0, discount = 0, tax = 0) {
   return net + Math.round((net * tax) / 100);
 }
 export const configSchema = z.object({
+  occasion: z.enum(["Bridal Consultation", "Personalised Gift"]),
+  gown: z.enum(["Seraphina — Classic Satin", "Aurelia — Romantic Lace", "Celeste — Modern Minimalist", "Vivienne — Statement Bridal", "Elara — Soft Elegance"]),
+  product: z.enum(["Bridal robe", "Champagne flute", "Bridal slippers", "Gift box", "Personalised bridal hanger"]),
+  message: z.string().max(40),
+  lettering: z.enum(["Playfair Display", "Montserrat", "Cursive"]),
+  motif: z.enum(["None", "Heart", "Botanical"]),
+  textColour: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  productColour: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  quantity: z.number().int().min(1).max(500),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   time: z.string().regex(/^\d{2}:\d{2}$/),
   location: z.string().min(2),
@@ -178,8 +152,7 @@ export function seed(): Data {
     name: "Amara Sample",
     email: "amara@example.com",
     date: "2026-12-05",
-    occasion: "Birthday Celebration",
-    balloons: true,
+    occasion: "Personalised Gift",
   };
   const items = estimate(c, defaults);
   return {
@@ -188,7 +161,7 @@ export function seed(): Data {
     packages: defaults,
     enquiries: [
       {
-        id: "KPM-ENQ-DEMO01",
+        id: "PM-ENQ-DEMO01",
         clientId: "CLIENT-DEMO01",
         config: c,
         items,
@@ -215,13 +188,7 @@ export function seed(): Data {
 }
 export function submit(d: Data, c: Config): string {
   configSchema.parse(c);
-  const required = [
-    c.occasion,
-    ...(c.flowers ? ["Floral styling"] : []),
-    ...(c.balloons ? ["Balloon styling"] : []),
-    ...(c.candles ? ["Candle styling"] : []),
-    ...(c.petals ? ["Rose petals"] : []),
-  ];
+  const required = [c.occasion, ...(c.occasion === "Personalised Gift" ? [c.product] : [])];
   if (
     required.some(
       (name) => !d.packages.some((p) => p.name === name && p.enabled),
@@ -230,7 +197,7 @@ export function submit(d: Data, c: Config): string {
     throw new Error(
       "A selected service is no longer available. Update your occasion or details before submitting.",
     );
-  const id = uid("KPM-ENQ");
+  const id = uid("PM-ENQ");
   let client = d.clients.find((x) => x.email === c.email);
   if (!client) {
     client = {
@@ -261,7 +228,7 @@ export function createQuote(d: Data, id: string) {
   const e = d.enquiries.find((e) => e.id === id);
   if (!e) throw Error("Enquiry not found");
   const q: Quote = {
-    id: uid("KPM-QUO"),
+    id: uid("PM-QUO"),
     enquiryId: id,
     items: structuredClone(e.items),
     charge: 0,
@@ -269,7 +236,7 @@ export function createQuote(d: Data, id: string) {
     tax: 0,
     deposit: 50,
     terms:
-      "Illustrative quotation. Delivery, venue approval and availability require confirmation. No payment is collected in this demo.",
+      "Demonstration quotation. Pricing, consultation dates and product availability require business confirmation. No payment is collected.",
     validUntil: "2026-12-31",
     status: "Draft",
     version: 1,
@@ -285,7 +252,7 @@ export function confirmBooking(d: Data, id: string) {
   const existing = d.bookings.find((b) => b.quoteId === id);
   if (existing) return existing.id;
   const b = {
-    id: uid("KPM-BKG"),
+    id: uid("PM-BKG"),
     enquiryId: q.enquiryId,
     quoteId: q.id,
     total: totals(q.items, q.charge, q.discount, q.tax),

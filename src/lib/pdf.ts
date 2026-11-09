@@ -15,10 +15,10 @@ export function exportPDF(d: Data, q: Quote, brief = false) {
     y += rows.length * 7 + 3;
   };
   pdf.setTextColor(81, 69, 67);
-  line("KPM OPULENCE", 24);
+  line("PRECIOUS MEMOIRS", 24);
   line(
     brief
-      ? "EVENT BRIEF / DEMONSTRATION"
+      ? "BRIDAL & GIFT BRIEF / DEMONSTRATION"
       : "PERSONALISED QUOTATION / DEMONSTRATION",
     12,
   );
@@ -26,23 +26,13 @@ export function exportPDF(d: Data, q: Quote, brief = false) {
   line(e.config.name + " / " + e.config.email);
   line(e.config.occasion + " / " + e.config.style, 16);
   line(e.config.date + " at " + e.config.time + " / " + e.config.location);
-  line("Guests: " + e.config.guests + " / " + e.config.venue);
-  if (e.config.officialPackage)
-    line(
-      "KPM package reference: " +
-        e.config.officialPackage +
-        " (official price to be confirmed)",
-    );
-  if (e.config.extras?.length)
-    line("Requested extras (quote-only): " + e.config.extras.join(", "));
-  line(
-    "Flowers: " +
-      (e.config.flowers ? e.config.flowerType : "No") +
-      " | Balloons: " +
-      (e.config.balloons ? e.config.balloonType : "No") +
-      " | Candles: " +
-      (e.config.candles ? e.config.candleType : "No"),
-  );
+  line("Selected gown: " + e.config.gown);
+  if (e.config.occasion === "Personalised Gift") {
+    line("Product: " + e.config.product + " / Quantity: " + e.config.quantity);
+    line("Personalisation: " + (e.config.message || "None"));
+    line("Font: " + e.config.lettering + " / Text: " + e.config.textColour + " / Product: " + e.config.productColour);
+    line("Motif: " + e.config.motif);
+  }
   if (brief) {
     line("Requirements: " + e.config.notes);
     line("Internal notes: " + e.notes);
@@ -68,7 +58,7 @@ export function exportPDF(d: Data, q: Quote, brief = false) {
     line("Valid until " + q.validUntil);
     line(q.terms);
   }
-  line("Illustrative prices only. Not an official KPM Opulence offer.");
+  line("Demonstration only. Prices and availability require business confirmation.");
   line("Interactive concept by paceIT / paceit.co.za");
   pdf.save(q.id + (brief ? "-brief" : "") + ".pdf");
 }

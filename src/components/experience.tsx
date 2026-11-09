@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowUpRight,
   ArrowRight,
@@ -43,48 +43,26 @@ import {
 } from "@/lib/model";
 import { exportPDF } from "@/lib/pdf";
 import VideoHero from "./video-hero";
+import GiftPreview from "./gift-preview";
 import {
-  officialPackages,
-  roomExtras,
-  productURL,
-  packageGroup,
+  gowns,
+  gifts,
 } from "@/lib/catalogue";
-const KEY = "kpm-studio-v1";
+const KEY = "precious-memoirs-v1";
 const image = (i: number) => "/images/editorial-" + (i % 6) + ".jpg";
 const themeImage = (style: string) =>
   image([1, 2, 0, 5, 3, 4][Math.max(0, styles.indexOf(style))]);
-const categories = [
-  "Romantic Proposals",
-  "Room Setups",
-  "Roses",
-  "Balloon Garland & Arch",
-  "Heart & I Love You Boxes",
-];
-const slugs = [
-  "romantic-proposals",
-  "room-setups",
-  "floral-arrangements",
-  "balloon-styling",
-  "heart-boxes",
-];
+const categories = gowns;
+const slugs = ["seraphina", "aurelia", "celeste", "vivienne", "elara"];
 const descriptions = [
-  "Proposal 1 & Proposal 2. A setting for your next chapter.",
-  "Three room-setup packages, with balloons and thoughtful personal touches.",
-  "Red, white and colour roses. A gesture that says everything.",
-  "Balloon garlands and 3m arches, styled for your celebration.",
-  "Heart Box and I Love You Box gifts. Beautiful little declarations.",
+  "Classic satin. A sculptural silhouette for a timeless entrance.",
+  "Romantic lace. Delicate details for your unforgettable day.",
+  "Modern minimalism. Quiet confidence, beautifully expressed.",
+  "Statement bridal. A celebration of presence and individuality.",
+  "Soft elegance. Effortless movement and considered detail.",
 ];
-const occasionDescriptions = [
-  "A setting for your next chapter.",
-  "Balloons, banners and room décor.",
-  "A room setup for your birthday.",
-  "Red, white or colour roses.",
-  "A personal brief or thoughtful gift.",
-];
-const collectionOccasion = (i: number) =>
-  [occasions[0], occasions[1], occasions[3], occasions[4], occasions[4]][i];
-const collectionImage = (i: number) =>
-  i === 3 ? "/images/balloon-styling.jpg" : image([0, 3, 1, 4, 2][i]);
+const occasionDescriptions = ["Explore a fictional gown and request a bridal consultation.", "Create a personalised bridal gift and request a quotation."];
+const collectionImage = (i: number) => "/images/gown-" + i + ".svg";
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="field">
@@ -129,6 +107,7 @@ function Modal({
 }
 export default function Experience() {
   const path = usePathname(),
+    searchParams = useSearchParams(),
     router = useRouter();
   const [data, setData] = useState<Data | null>(null),
     [config, setConfig] = useState<Config>(initial),
@@ -141,7 +120,9 @@ export default function Experience() {
       const raw = localStorage.getItem(KEY);
       setData(raw ? JSON.parse(raw) : seed());
       const draft = localStorage.getItem(KEY + "-draft");
-      if (draft) setConfig({ ...initial, ...JSON.parse(draft) });
+      const saved = draft ? { ...initial, ...JSON.parse(draft) } : { ...initial };
+      if (new URLSearchParams(window.location.search).get("request") === "gift") saved.occasion = "Personalised Gift";
+      setConfig(saved);
     } catch {
       setData(seed());
       setNotice(
@@ -160,6 +141,11 @@ export default function Experience() {
     window.addEventListener("storage", sync);
     return () => window.removeEventListener("storage", sync);
   }, []);
+  useEffect(() => {
+    if (path === "/studio" && searchParams.get("request") === "gift") {
+      setConfig(current => ({ ...current, occasion: "Personalised Gift" }));
+    }
+  }, [path, searchParams]);
   const updateConfig = (patch: Partial<Config>) => {
     const next = { ...config, ...patch };
     setConfig(next);
@@ -212,7 +198,7 @@ export default function Experience() {
     <>
       <Link href="/collections">Collections</Link>
       <Link href="/gallery">Our inspiration</Link>
-      <Link href="/studio">The Event Studio</Link>
+      <Link href="/studio">The Bridal Studio</Link>
     </>
   );
   return (
@@ -224,17 +210,17 @@ export default function Experience() {
         <div className="manager">
           <aside className="sidebar">
             <Link className="brand" href="/">
-              KPM<span>OPULENCE</span>
+              Precious<span>MEMOIRS</span>
             </Link>
             <p className="eyebrow">STUDIO MANAGER</p>
             {[
               ["", "Overview", LayoutDashboard],
-              ["enquiries", "Enquiries", Inbox],
-              ["quotations", "Quotations", FileText],
-              ["bookings", "Bookings", Flower2],
+              ["enquiries", "Bridal Enquiries", Inbox],
+              ["quotations", "Gift Quotations", FileText],
+              ["bookings", "Orders", Flower2],
               ["calendar", "Calendar", CalendarDays],
-              ["clients", "Clients", Users],
-              ["packages", "Packages", SlidersHorizontal],
+              ["clients", "Customers", Users],
+              ["packages", "Products", SlidersHorizontal],
               ["analytics", "Analytics", BarChart3],
               ["settings", "Settings", Settings],
             ].map(([url, label, Icon]) => {
@@ -264,7 +250,7 @@ export default function Experience() {
           <div className="manager-main">
             <header className="manager-top">
               <span>
-                THE EVENT STUDIO <span className="muted">/ Management</span>
+                THE BRIDAL STUDIO <span className="muted">/ Management</span>
               </span>
               <span className="badge">DEMO WORKSPACE</span>
             </header>
@@ -282,11 +268,11 @@ export default function Experience() {
         <>
           <header className={"site-nav" + (path === "/" ? " cinema-nav" : "")}>
             <Link className="brand" href="/">
-              KPM<span>OPULENCE</span>
+              Precious<span>MEMOIRS</span>
             </Link>
             <nav aria-label="Main navigation">{nav}</nav>
             <Link className="nav-cta" href="/studio">
-              Design your experience <ArrowUpRight size={16} />
+              Request a consultation <ArrowUpRight size={16} />
             </Link>
             <button
               className="mobile-toggle"
@@ -341,14 +327,14 @@ export default function Experience() {
             </div>
             <div className="footer-row">
               <Link className="brand" href="/">
-                KPM<span>OPULENCE</span>
+                Precious<span>MEMOIRS</span>
               </Link>
               {nav}
               <Link href="/admin">Studio Manager ↗</Link>
             </div>
             <div className="fineprint">
               <span>
-                Illustrative concept. Not the official booking website.
+                Block 8, Gaborone, Botswana · Browser-only demonstration.
               </span>
               <span>
                 Interactive concept by <a href="https://paceit.co.za">paceIT</a>{" "}
@@ -365,7 +351,7 @@ export default function Experience() {
       ) : (
         <div className="tour">
           <span className="eyebrow">
-            A MOMENT, FROM IDEA TO CONFIRMED EVENT
+            A MEMORY, FROM IDEA TO CONFIRMED ORDER
           </span>
           <p>Design → Enquire → Quote → Accept → Book → Calendar</p>
           <div>
@@ -513,16 +499,14 @@ function Home() {
           <div>
             <img
               src={image(2)}
-              alt="Delicate white and pink blooms in an editorial floral arrangement"
+              alt="Wedding inspiration with delicate florals"
               loading="lazy"
             />
             <p>
-              A thoughtful detail can change everything. The flowers. The light.
-              The way a room feels when you walk in.
+              A gown that feels like you. A keepsake with your name. Thoughtful details for your most precious memories.
             </p>
             <p>
-              Explore a world of considered celebrations, then tell us what
-              yours could look like.
+              Discover our bridal boutique in Block 8, Gaborone, Botswana. Explore these fictional collections and begin your consultation.
             </p>
             <Link className="text-link" href="/collections">
               Discover the collections <ArrowUpRight size={16} />
@@ -588,27 +572,25 @@ function Home() {
           loading="lazy"
         />
         <div className="reveal">
-          <p className="eyebrow">INTRODUCING THE EVENT STUDIO</p>
+          <p className="eyebrow">PERSONALISED BRIDAL GIFTS</p>
           <h2>
             Make it
             <br />
             <em>yours.</em>
           </h2>
           <p>
-            Your favourite flowers. Your kind of colour. Your own unforgettable
-            occasion. Bring the details together in an interactive styling
-            moodboard.
+            Your name. Your colour. Your own thoughtful detail. Personalise a bridal robe, champagne flute, slippers, gift box or hanger with a live illustrative preview.
           </p>
           <div className="chips">
-            <span>Florals</span>
-            <span>Candlelight</span>
+            <span>Your name</span>
+            <span>Your colour</span>
             <span>Your date</span>
           </div>
           <Link className="button" href="/studio">
             Start Designing <ArrowUpRight size={16} />
           </Link>
           <small>
-            Illustrative styling concepts. Every final detail is confirmed with
+            Illustrative products. Every final detail is confirmed with
             you.
           </small>
         </div>
@@ -651,7 +633,8 @@ function Collections({
   configure: (c: Partial<Config>) => void;
 }) {
   const slug = path.split("/")[2];
-  const index = slug === "bespoke-celebrations" ? 4 : slugs.indexOf(slug);
+  const legacy = ["romantic-proposals", "room-setups", "floral-arrangements", "balloon-styling", "heart-boxes", "bespoke-celebrations"];
+  const index = slugs.includes(slug) ? slugs.indexOf(slug) : legacy.indexOf(slug) >= 0 ? Math.min(4, legacy.indexOf(slug)) : -1;
   if (slug && index < 0)
     return (
       <section className="page-title">
@@ -663,14 +646,14 @@ function Collections({
     <>
       <section className="page-title">
         <p className="eyebrow">
-          THE COLLECTIONS / ILLUSTRATIVE STYLING DIRECTIONS
+          THE BRIDAL COLLECTION / FICTIONAL DEMONSTRATION GOWNS
         </p>
         <h1>
           {index >= 0 ? (
             categories[index]
           ) : (
             <>
-              Every occasion.
+              Every detail.
               <br />
               <em>Beautiful possibilities.</em>
             </>
@@ -693,80 +676,21 @@ function Collections({
             <p className="eyebrow">0{i + 1} / CURATED POSSIBILITIES</p>
             <h2>{categories[i]}</h2>
             <p>{descriptions[i]}</p>
-            <div className="official-packages">
-              <p className="eyebrow">FROM THE KPM OPULENCE CATALOGUE</p>
-              {officialPackages
-                .filter((p) => p.group === i)
-                .map((p) => (
-                  <details key={p.name}>
-                    <summary>
-                      {p.name}
-                      <Plus size={14} />
-                    </summary>
-                    {p.includes.length > 0 ? (
-                      <ul>
-                        {p.includes.map((line) => (
-                          <li key={line}>{line}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p>
-                        Contact KPM to confirm the arrangement and inclusions.
-                      </p>
-                    )}
-                    <a
-                      className="text-link"
-                      href={productURL(p)}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      View on KPM’s website ↗
-                    </a>
-                    <Link
-                      className="text-link"
-                      href="/studio"
-                      onClick={() =>
-                        configure({
-                          occasion: collectionOccasion(i),
-                          officialPackage: p.name,
-                          extras: [],
-                        })
-                      }
-                    >
-                      Use as my starting point ↗
-                    </Link>
-                  </details>
-                ))}
-              {i === 1 && (
-                <p className="note">
-                  Room setup extras: {roomExtras.join(" · ")}. Quoted
-                  separately.
-                </p>
-              )}
-            </div>
-            <p className="price">
-              Illustrative base{" "}
-              {money(
-                data.packages.find((p) => p.name === collectionOccasion(i))
-                  ?.price ?? 0,
-              )}
-            </p>
-            <small>
-              Not official pricing. Delivery and custom installations are
-              quote-only. Subject to availability.
-            </small>
+            <p className="note">Fictional demonstration gown. Original illustration; bridal photography and confirmed inventory are pending.</p>
+            <p className="price">Price on request</p>
+            <small>Request a consultation to discuss availability, sizing and your wedding day.</small>
             <Link
               className="button"
               href="/studio"
               onClick={() =>
                 configure({
-                  occasion: collectionOccasion(i),
-                  officialPackage:
-                    officialPackages.find((p) => p.group === i)?.name || "",
+                  occasion: "Bridal Consultation",
+                  gown: gowns[i],
+                  officialPackage: gowns[i],
                 })
               }
             >
-              Personalise this experience <ArrowUpRight size={16} />
+              Request a Consultation <ArrowUpRight size={16} />
             </Link>
           </div>
         </section>
@@ -794,7 +718,7 @@ function Gallery({ compact = false }: { compact?: boolean }) {
       {!compact && (
         <section className="page-title">
           <p className="eyebrow">
-            ILLUSTRATIVE INSPIRATION / NOT KPM PROJECT PHOTOGRAPHY
+            ILLUSTRATIVE INSPIRATION / NOT BUSINESS PRODUCT PHOTOGRAPHY
           </p>
           <h1>
             A feeling,
@@ -832,7 +756,7 @@ function Gallery({ compact = false }: { compact?: boolean }) {
           <img className="modal-photo" src={image(open)} alt={titles[open]} />
           <p>
             Editorial moodboard reference. This photograph is inspiration, not a
-            verified KPM Opulence project.
+            verified Precious Memoirs product.
           </p>
           <div className="actions">
             <button onClick={() => setOpen((open + 5) % 6)}>← Previous</button>
@@ -871,10 +795,10 @@ function Studio({
     [busy, setBusy] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const names = [
-    "Occasion",
+    "Request",
     "Style",
-    "Details",
-    "Your event",
+    "Personalisation",
+    "Your date",
     "About you",
     "Review",
   ];
@@ -910,6 +834,9 @@ function Studio({
         e.location = "Enter your venue or city.";
       if (!Number.isInteger(c.guests) || c.guests < 1)
         e.guests = "Enter at least one guest.";
+    }
+    if (step === 2 || all) {
+      if (!Number.isInteger(c.quantity) || c.quantity < 1 || c.quantity > 500) e.quantity = "Enter a quantity from 1 to 500.";
     }
     if (step === 4 || all) {
       const parsed = configSchema.safeParse(c);
@@ -951,7 +878,7 @@ function Studio({
       <div className="studio-heading">
         <div>
           <p className="eyebrow">
-            THE EVENT STUDIO / YOUR OWN BEAUTIFUL POSSIBILITY
+            THE BRIDAL STUDIO / YOUR OWN PRECIOUS MEMORY
           </p>
           <h1>
             Let’s make it <em>yours.</em>
@@ -979,64 +906,19 @@ function Studio({
       </div>
       <div className="builder">
         <aside className="moodboard">
-          <div className="moodboard-main">
-            <img
-              key={c.style + c.occasion}
-              src={themeImage(c.style)}
-              alt={c.style + " illustrative moodboard"}
-            />
-            <div>
-              <span className="eyebrow">YOUR STYLING MOODBOARD</span>
-              <h2>{c.style}</h2>
-            </div>
-          </div>
-          <div className="moodboard-details">
-            {c.flowers && (
-              <figure>
-                <img
-                  src={image(c.flowerType === "White roses" ? 2 : 1)}
-                  alt={c.flowerType}
-                />
-                <figcaption>{c.flowerType}</figcaption>
-              </figure>
-            )}
-            {c.candles && (
-              <figure>
-                <img src={image(3)} alt="Floral and candle detail" />
-                <figcaption>Candlelight</figcaption>
-              </figure>
-            )}
-            {c.balloons && (
-              <figure>
-                <img
-                  className="balloon-photo"
-                  src="/images/balloon-styling.jpg"
-                  alt="Pink and white balloon garland styling inspiration"
-                />
-                <figcaption>{c.balloonType}</figcaption>
-              </figure>
-            )}
-          </div>
-          <div className="palette">
-            <i style={{ background: "#e7cfcf" }} />
-            <i style={{ background: "#f0e9df" }} />
-            <i style={{ background: "#c7ae91" }} />
-            <span>{c.occasion}</span>
-          </div>
-          <small>
-            Illustrative moodboard, not a rendered room design. Enabled details
-            appear below the main reference.
-          </small>
+          {c.occasion === "Personalised Gift" ? <GiftPreview config={c} /> : <div className="moodboard-main"><img src={collectionImage(Math.max(0, gowns.indexOf(c.gown)))} alt={c.gown + " original illustration"} /><div><span className="eyebrow">YOUR BRIDAL CONSULTATION</span><h2>{c.gown}</h2></div></div>}
+          <div className="palette"><i style={{ background: c.productColour }} /><i style={{ background: c.textColour }} /><span>{c.style}</span></div>
+          <small>Illustrative preview, not a product photograph. Gowns are fictional demonstration styles. Final materials and availability require confirmation.</small>
         </aside>
         <div className="builder-controls">
           <p className="eyebrow">STEP 0{step + 1} / 06</p>
           <h2 ref={heading} tabIndex={-1}>
             {
               [
-                "What are we celebrating?",
+                "What can we make precious?",
                 "Find your feeling.",
                 "The details make it yours.",
-                "Set the scene.",
+                "Save your date.",
                 "A little about you.",
                 "Your moment, considered.",
               ][step]
@@ -1077,42 +959,12 @@ function Studio({
                       </button>
                     ))}
                 </div>
-                <Field label="KPM package / product starting point">
-                  <select
-                    value={c.officialPackage || ""}
-                    onChange={(e) =>
-                      update({ officialPackage: e.target.value })
-                    }
-                  >
-                    <option value="">Create a bespoke brief</option>
-                    {officialPackages
-                      .filter(
-                        (p) =>
-                          p.group === packageGroup(c.occasion) ||
-                          (c.occasion === "Custom Event" && p.group === 3),
-                      )
-                      .map((p) => (
-                        <option key={p.name}>{p.name}</option>
-                      ))}
+                <Field label={c.occasion === "Personalised Gift" ? "Gift product" : "Selected gown"}>
+                  <select value={c.occasion === "Personalised Gift" ? c.product : c.gown} onChange={e => update(c.occasion === "Personalised Gift" ? { product: e.target.value } : { gown: e.target.value })}>
+                    {(c.occasion === "Personalised Gift" ? gifts.filter(g => data.packages.find(p => p.name === g)?.enabled) : gowns).map(name => <option key={name}>{name}</option>)}
                   </select>
                 </Field>
-                {c.officialPackage && (
-                  <div className="note">
-                    <strong>{c.officialPackage}</strong>
-                    <ul>
-                      {officialPackages
-                        .find((p) => p.name === c.officialPackage)
-                        ?.includes.map((line) => (
-                          <li key={line}>{line}</li>
-                        ))}
-                    </ul>
-                    <small>
-                      Official package reference. Package pricing and final
-                      inclusions are confirmed by KPM. The demo estimate below
-                      is illustrative.
-                    </small>
-                  </div>
-                )}
+                <p className="note">Demonstration collection. No confirmed inventory or advertised prices. All requests stay in this browser.</p>
               </>
             )}
             {step === 1 && (
@@ -1136,138 +988,30 @@ function Studio({
               </div>
             )}
             {step === 2 && (
-              <>
-                <p className="muted">
-                  Curated details, not a fixed package. Custom installations are
-                  quoted individually.
-                </p>
-                {(["flowers", "balloons", "candles", "petals"] as const).map(
-                  (key, i) => {
-                    const label = [
-                      "Floral styling",
-                      "Balloon styling",
-                      "Candle styling",
-                      "Rose petals",
-                    ][i];
-                    const pkg = data.packages.find((p) => p.name === label);
-                    return (
-                      <div className="detail-option" key={key}>
-                        <label className="toggle-label">
-                          <span>
-                            <strong>{label}</strong>
-                            <small>
-                              {money(pkg?.price ?? 0)} · illustrative
-                            </small>
-                          </span>
-                          <input
-                            type="checkbox"
-                            checked={c[key]}
-                            disabled={!pkg?.enabled}
-                            onChange={(e) =>
-                              update({ [key]: e.target.checked })
-                            }
-                          />
-                        </label>
-                        {c[key] && key !== "petals" && (
-                          <Field label="Styling preference">
-                            <select
-                              value={
-                                key === "flowers"
-                                  ? c.flowerType
-                                  : key === "balloons"
-                                    ? c.balloonType
-                                    : c.candleType
-                              }
-                              onChange={(e) =>
-                                update({
-                                  [key === "flowers"
-                                    ? "flowerType"
-                                    : key === "balloons"
-                                      ? "balloonType"
-                                      : "candleType"]: e.target.value,
-                                })
-                              }
-                            >
-                              {(key === "flowers"
-                                ? [
-                                    "Blush roses",
-                                    "White roses",
-                                    "Red roses",
-                                    "Mixed florals",
-                                    "Custom colours",
-                                  ]
-                                : key === "balloons"
-                                  ? [
-                                      "Balloon garland",
-                                      "Balloon arch",
-                                      "Room balloons",
-                                      "Custom installation",
-                                    ]
-                                  : [
-                                      "Subtle candle accents",
-                                      "Romantic candle arrangement",
-                                      "Decorative candle pathway",
-                                    ]
-                              ).map((o) => (
-                                <option key={o}>{o}</option>
-                              ))}
-                            </select>
-                          </Field>
-                        )}
-                      </div>
-                    );
-                  },
-                )}
-                {packageGroup(c.occasion) === 1 && (
-                  <fieldset className="room-extras">
-                    <legend>KPM room setup extras · quote-only</legend>
-                    {roomExtras.map((extra) => (
-                      <label className="consent" key={extra}>
-                        <input
-                          type="checkbox"
-                          checked={(c.extras || []).includes(extra)}
-                          onChange={(e) =>
-                            update({
-                              extras: e.target.checked
-                                ? [...(c.extras || []), extra]
-                                : (c.extras || []).filter((x) => x !== extra),
-                            })
-                          }
-                        />
-                        {extra}
-                      </label>
-                    ))}
-                  </fieldset>
-                )}
-                <Field label="Backdrop · quote-only">
-                  <select
-                    value={c.backdrop}
-                    onChange={(e) => update({ backdrop: e.target.value })}
-                  >
-                    {[
-                      "None",
-                      "Floral backdrop",
-                      "Draped backdrop",
-                      "Decorative display",
-                      "Custom request",
-                    ].map((o) => (
-                      <option key={o}>{o}</option>
-                    ))}
-                  </select>
-                </Field>
-                {field(
-                  "message",
-                  "Personalised signage or message · quote-only",
-                )}
+              c.occasion === "Personalised Gift" ? <>
+                <Field label="Personalised name or text"><input maxLength={40} value={c.message} onChange={e => update({ message: e.target.value })} /></Field>
+                <Field label="Font style"><select value={c.lettering} onChange={e => update({ lettering: e.target.value })}>{["Playfair Display", "Montserrat", "Cursive"].map(font => <option key={font}>{font}</option>)}</select></Field>
+                <div className="form-grid">
+                  <Field label="Text colour"><input type="color" value={c.textColour} onChange={e => update({ textColour: e.target.value })} /></Field>
+                  <Field label="Product colour"><input type="color" value={c.productColour} onChange={e => update({ productColour: e.target.value })} /></Field>
+                </div>
+                <Field label="Decorative motif"><select value={c.motif} onChange={e => update({ motif: e.target.value })}>{["None", "Heart", "Botanical"].map(m => <option key={m}>{m}</option>)}</select></Field>
+                <Field label="Quantity"><input id="quantity" aria-invalid={!!errors.quantity} aria-describedby={errors.quantity ? "quantity-error" : undefined} type="number" min={1} max={500} value={c.quantity} onChange={e => update({ quantity: Number(e.target.value) })} /></Field>
+                {errors.quantity && <p id="quantity-error" className="error">{errors.quantity}</p>}
+                <p className="note">Your preview updates as you type. Placement, finish and materials require confirmation.</p>
+              </> : <>
+                <p>Your selected gown: <strong>{c.gown}</strong>. Share sizing, fitting or accessory preferences with your bridal consultant.</p>
+                <Field label="Bridal consultation preferences"><textarea value={c.message} maxLength={40} onChange={e => update({ message: e.target.value })} /></Field>
+                <p className="note">Fictional gown names; no stock or fitting availability is implied.</p>
               </>
             )}
             {step === 3 && (
               <>
                 <div className="form-grid">
-                  {field("date", "Preferred event date", "date")}
+                  {field("date", c.occasion === "Personalised Gift" ? "Required by date" : "Wedding date", "date")}
                   {field("time", "Preferred time", "time")}
                   {field("location", "Location / venue")}
-                  {field("guests", "Number of guests", "number")}
+                  {field("guests", "Bridal party size", "number")}
                   <Field label="Venue type">
                     <select
                       value={c.venue}
@@ -1284,18 +1028,15 @@ function Studio({
                       onChange={(e) => update({ budget: e.target.value })}
                     >
                       {[
-                        "Below R3,000",
-                        "R3,000–R5,000",
-                        "R5,000–R10,000",
-                        "R10,000+",
                         "Let’s discuss",
+                        "Please provide a quotation",
                       ].map((o) => (
                         <option key={o}>{o}</option>
                       ))}
                     </select>
                   </Field>
                 </div>
-                <Field label="Setup requirements and special notes">
+                <Field label="Additional notes">
                   <textarea
                     className="resize-none"
                     value={c.notes}
@@ -1303,8 +1044,7 @@ function Studio({
                   />
                 </Field>
                 <p className="note">
-                  Your requested date is not confirmed availability. Delivery
-                  and installation are quoted separately.
+                  Your requested date is not confirmed availability. Consultations, fulfilment and delivery require business confirmation.
                 </p>
               </>
             )}
@@ -1312,7 +1052,7 @@ function Studio({
               <>
                 <p className="note">
                   This is a browser-only product demonstration. Use fictional
-                  details only; nothing is emailed or sent to KPM.
+                  details only; nothing is emailed or sent to PM.
                 </p>
                 <div className="form-grid">
                   {field("name", "Full name")}
@@ -1361,7 +1101,7 @@ function Studio({
                   {items.map((i) => (
                     <p key={i.name}>
                       <span>{i.name}</span>
-                      <span>{money(i.price)}</span>
+                      <span>{money(i.price * i.qty)}</span>
                     </p>
                   ))}
                   <p>
@@ -1386,11 +1126,10 @@ function Studio({
             )}
           </div>
           <div className="estimate">
-            <span>YOUR ILLUSTRATIVE ESTIMATE</span>
-            <strong>{money(totals(items))}</strong>
+            <span>YOUR PERSONALISED REQUEST</span>
+            <strong>Price on request</strong>
             <small>
-              Illustrative estimate only. Final pricing is subject to
-              confirmation by KPM Opulence.
+              No prices are advertised in this demo. Precious Memoirs will confirm pricing and availability.
             </small>
           </div>
           <div className="actions builder-actions">
@@ -1408,7 +1147,7 @@ function Studio({
               </button>
             ) : (
               <button className="button" disabled={busy} onClick={send}>
-                {busy ? "Saving…" : "Request My Personalised Quote"}{" "}
+                {busy ? "Saving…" : c.occasion === "Personalised Gift" ? "Request a Quote" : "Request a Consultation"}{" "}
                 <ArrowUpRight size={16} />
               </button>
             )}
@@ -1425,15 +1164,15 @@ function Summary({ c }: { c: Config }) {
   return (
     <dl className="summary">
       {[
-        ["Occasion", c.occasion],
+        ["Request type", c.occasion],
         ["Style", c.style],
-        ["KPM package reference", c.officialPackage || "Bespoke brief"],
-        ["Requested extras", (c.extras || []).join(", ") || "None"],
-        ["Flowers", c.flowers ? c.flowerType : "No"],
-        ["Balloons", c.balloons ? c.balloonType : "No"],
-        ["Candles", c.candles ? c.candleType : "No"],
-        ["Rose petals", c.petals ? "Yes" : "No"],
-        ["Backdrop", c.backdrop],
+        ["Selected gown", c.occasion === "Bridal Consultation" ? c.gown : "—"],
+        ["Gift product", c.occasion === "Personalised Gift" ? c.product : "—"],
+        ["Quantity", c.occasion === "Personalised Gift" ? String(c.quantity) : "1"],
+        ["Font", c.lettering],
+        ["Text colour", c.textColour],
+        ["Product colour", c.productColour],
+        ["Decorative motif", c.motif],
         ["Date & time", c.date + " · " + c.time],
         ["Location", c.location],
         ["Guests / venue", c.guests + " / " + c.venue],
@@ -1504,6 +1243,7 @@ function Admin({
     id = path.split("/")[3];
   const [search, setSearch] = useState(""),
     [status, setStatus] = useState("All"),
+    [requestType, setRequestType] = useState("All"),
     [page, setPage] = useState(0),
     [month, setMonth] = useState("2026-11"),
     [day, setDay] = useState(""),
@@ -1521,7 +1261,7 @@ function Admin({
   const heading = (
     <div className="admin-heading">
       <div>
-        <p className="eyebrow">KPM OPULENCE / STUDIO MANAGER</p>
+        <p className="eyebrow">PRECIOUS MEMOIRS / STUDIO MANAGER</p>
         <h1>
           {enquiry
             ? enquiry.config.name
@@ -1545,6 +1285,7 @@ function Admin({
   const list = d.enquiries.filter(
     (e) =>
       (status === "All" || e.status === status) &&
+      (requestType === "All" || e.config.occasion === requestType) &&
       (e.config.name + " " + e.id + " " + e.config.occasion)
         .toLowerCase()
         .includes(search.toLowerCase()),
@@ -1552,10 +1293,11 @@ function Admin({
   const enquiriesTable = (
     <div className="panel">
       <div className="panel-heading">
-        <h2>{section === "overview" ? "Recent enquiries" : "Enquiries"}</h2>
+        <h2>{section === "overview" ? "Recent enquiries" : "Bridal & gift enquiries"}</h2>
         <span>{list.length} records</span>
       </div>
       <div className="table-controls">
+        <Field label="Request type"><select value={requestType} onChange={e => { setRequestType(e.target.value); setPage(0); }}><option>All</option>{occasions.map(o => <option key={o}>{o}</option>)}</select></Field>
         <label>
           <span className="sr-only">Search enquiries</span>
           <input
@@ -1600,7 +1342,7 @@ function Admin({
             <tr>
               <th>CLIENT / REFERENCE</th>
               <th>EXPERIENCE</th>
-              <th>EVENT DATE</th>
+              <th>REQUIRED DATE</th>
               <th>ESTIMATE</th>
               <th>STATUS</th>
               <th>DETAILS</th>
@@ -1667,13 +1409,13 @@ function Admin({
   const metrics = (
     <div className="metrics">
       {[
-        ["Enquiries", d.enquiries.length, "All saved briefs"],
+        ["Requests", d.enquiries.length, "All saved briefs"],
         [
           "Open quotations",
           d.quotes.filter((q) => q.status === "Draft").length,
           "Awaiting acceptance",
         ],
-        ["Confirmed bookings", d.bookings.length, "Accepted & confirmed"],
+        ["Confirmed orders", d.bookings.length, "Accepted & confirmed"],
         ["Booked value", money(total), "Illustrative, not collected revenue"],
       ].map(([label, n, sub]) => (
         <div className="metric" key={label}>
@@ -1777,7 +1519,7 @@ function Admin({
                   {enquiry.items.map((i) => (
                     <p key={i.name}>
                       <span>{i.name}</span>
-                      <span>{money(i.price)}</span>
+                      <span>{money(i.price * i.qty)}</span>
                     </p>
                   ))}
                   <p>
@@ -1882,6 +1624,7 @@ function Admin({
       {section === "quotations" && !id && (
         <div className="panel">
           <h2>Considered down to the last detail.</h2>
+          {d.enquiries.filter(e => e.config.occasion === "Personalised Gift" && !d.quotes.some(q => q.enquiryId === e.id)).map(e => <Link className="list-row" href={"/admin/enquiries/" + e.id} key={e.id}><span><strong>{e.config.name}</strong><small>{e.config.product} × {e.config.quantity} · {e.config.message || "No lettering"}</small></span><span>Awaiting a quotation ↗</span></Link>)}
           {d.quotes.map((q) => {
             const e = d.enquiries.find((e) => e.id === q.enquiryId)!;
             return (
@@ -1924,7 +1667,7 @@ function Admin({
                 <Download size={16} /> Download PDF
               </button>
               <button onClick={() => exportPDF(d, quote, true)}>
-                Event brief PDF
+                Request brief PDF
               </button>
               {quote.status === "Draft" && (
                 <>
@@ -1961,7 +1704,7 @@ function Admin({
             </div>
             <div className="quote-paper">
               <div className="quote-brand">
-                KPM <span>OPULENCE</span>
+                Precious <span>MEMOIRS</span>
               </div>
               <p className="eyebrow">A MOMENT, BEAUTIFULLY CONSIDERED</p>
               <h2>Personalised quotation</h2>
@@ -2077,7 +1820,7 @@ function Admin({
                   }
                 />
               </Field>
-              <Field label="Unit price (R)">
+              <Field label="Unit price (BWP)">
                 <input
                   type="number"
                   min="0"
@@ -2249,7 +1992,7 @@ function Admin({
           </div>
           <Calendar month={month} data={d} day={day} choose={setDay} />
           <div className="calendar-detail">
-            <h3>{day || month} / Confirmed events</h3>
+            <h3>{day || month} / Confirmed orders</h3>
             {d.bookings
               .filter((b) =>
                 d.enquiries
@@ -2280,7 +2023,7 @@ function Admin({
                 .config.date.startsWith(day || month),
             ) && (
               <p className="empty">
-                No confirmed events for this {day ? "day" : "month"}. Enquiries
+                No confirmed orders for this {day ? "day" : "month"}. Enquiries
                 do not reserve a date.
               </p>
             )}
@@ -2335,13 +2078,13 @@ function Admin({
         <div className="panel">
           <h2>The building blocks.</h2>
           <p>
-            Illustrative catalogue. Changes apply to new estimates; existing
+            No prices are prefilled. Enter business-approved quotations in BWP. Changes apply to new requests; existing
             enquiry snapshots and quotations stay intact.
           </p>
           {pkg.map((p, i) => (
             <div className="package-row" key={p.name}>
               <strong>{p.name}</strong>
-              <Field label="Illustrative price (R)">
+              <Field label="Business-entered price (BWP)">
                 <input
                   type="number"
                   min="0"
@@ -2384,7 +2127,7 @@ function Admin({
             onClick={() =>
               mutate((n) => {
                 n.packages = pkg;
-              }, "Catalogue saved. New estimates use updated prices.")
+              }, "Catalogue saved. New requests use updated prices.")
             }
           >
             Save catalogue
@@ -2428,7 +2171,7 @@ function Admin({
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = "kpm-demo-backup.json";
+                a.download = "precious-memoirs-backup.json";
                 a.click();
                 URL.revokeObjectURL(url);
               }}

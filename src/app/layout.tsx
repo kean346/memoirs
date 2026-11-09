@@ -2,23 +2,12 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 const display = localFont({
-  src: [
-    { path: "../../public/fonts/font-2.ttf", weight: "400", style: "normal" },
-    { path: "../../public/fonts/font-3.ttf", weight: "500", style: "normal" },
-    { path: "../../public/fonts/font-4.ttf", weight: "600", style: "normal" },
-    { path: "../../public/fonts/font-0.ttf", weight: "400", style: "italic" },
-    { path: "../../public/fonts/font-1.ttf", weight: "500", style: "italic" },
-  ],
+  src: [{ path: "../../public/fonts/playfair.ttf", weight: "400 900" }],
   variable: "--font-display",
   display: "swap",
 });
 const sans = localFont({
-  src: [
-    { path: "../../public/fonts/font-5.ttf", weight: "400" },
-    { path: "../../public/fonts/font-6.ttf", weight: "500" },
-    { path: "../../public/fonts/font-7.ttf", weight: "600" },
-    { path: "../../public/fonts/font-8.ttf", weight: "700" },
-  ],
+  src: [{ path: "../../public/fonts/montserrat.ttf", weight: "100 900" }],
   variable: "--font-sans",
   display: "swap",
 });
@@ -32,26 +21,26 @@ const siteOrigin =
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
   openGraph: {
-    title: "KPM Opulence — The Event Studio",
+    title: "Precious Memoirs — The Bridal Studio",
     description:
-      "Your moment, beautifully imagined. Florals, romantic settings and personalised celebrations.",
-    siteName: "KPM Opulence",
+      "Luxury bridal gowns, personalised gifts and bridal consultations in Block 8, Gaborone, Botswana.",
+    siteName: "Precious Memoirs",
     type: "website",
-    locale: "en_ZA",
+    locale: "en_BW",
   },
   twitter: {
     card: "summary_large_image",
-    title: "KPM Opulence — The Event Studio",
-    description: "Your moment, beautifully imagined.",
-    images: ["/opengraph-image.png"],
+    title: "Precious Memoirs — The Bridal Studio",
+    description: "Every Detail. A Precious Memory.",
+    images: ["/opengraph-image"],
   },
-  title: "KPM Opulence — The Event Studio",
+  title: "Precious Memoirs — The Bridal Studio",
   description:
-    "Your moment, beautifully imagined. An interactive event styling concept by paceIT.",
+    "Luxury bridal elegance and personalised gifts in Gaborone, Botswana. Browser-local demonstration.",
 };
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-ZA" className={display.variable + " " + sans.variable}>
+    <html lang="en-BW" className={display.variable + " " + sans.variable}>
       <body>{children}</body>
     </html>
   );

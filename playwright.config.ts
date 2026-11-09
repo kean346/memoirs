@@ -7,7 +7,7 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:3000",
     browserName: "chromium",
-    launchOptions: { downloadsPath: path.resolve("../work/downloads") },
+    launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH, downloadsPath: path.resolve("../work/downloads") },
   },
   workers: 1,
 });

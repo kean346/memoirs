@@ -65,3 +65,13 @@ The supplied soft 1080p references have been replaced by original 3840×2160 Pex
 - roses-raindrops-4k.mp4: [Marek Ruczaj](https://www.pexels.com/video/raindrops-on-delicate-pink-roses-36496434/). Original 4K MP4, no enlargement or recompression. Matching JPEG poster is an extracted frame.
 
 - celebration-table-4k.mp4: [Marian Croitoru](https://www.pexels.com/video/elegant-outdoor-wedding-table-in-tuscan-villa-29956462/). Original 4K MP4, no enlargement or recompression. Matching JPEG poster is an extracted frame.
+
+## Precious Memoirs adaptation
+
+The active Next.js app is rebranded to Precious Memoirs. The original template and historical implementation notes above are retained for attribution.
+
+- `public/images/gown-0.svg` through `gown-4.svg`: original code-drawn gown illustrations, explicitly labelled fictional demonstration designs; not product photographs or confirmed inventory.
+- `src/components/gift-preview.tsx`: original layered SVG illustrations of robes, flutes, slippers, gift boxes and hangers; no external product artwork.
+- Playfair Display and Montserrat: Google Fonts, SIL Open Font License; original font files and licence text downloaded from the official google/fonts repository and hosted locally.
+- Existing Pexels 4K wedding footage is retained with its original credits and licences in the manifest. Stock inspiration does not represent Precious Memoirs work.
+- The Precious Memoirs text wordmark, icon and generated social card are provisional. No official logo was supplied in this session.

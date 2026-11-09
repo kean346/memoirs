@@ -11,7 +11,7 @@ export async function connectWorkspaceRepository() {
   const client = new MongoClient(uri);
   await client.connect();
   const collection = client
-    .db(process.env.MONGODB_DB || "kpm_studio")
+    .db(process.env.MONGODB_DB || "precious_memoirs")
     .collection<Data & { workspaceId: string }>("workspaces");
   return {
     async read(workspaceId: string) {
