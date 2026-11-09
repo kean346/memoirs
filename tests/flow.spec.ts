@@ -143,25 +143,55 @@ test("all generated product bases load and selected styling appears in the live 
   await expect(page.locator(".gift-preview")).toHaveAttribute("data-style", "Blush Romance");
 });
 
-test("production cards reveal, animate on hover and retain full-bleed frames and added sections", async ({ page }) => {
+test("depth runway loops, synchronises products and opens the selected gown in the studio", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/collections");
+  const scene = page.locator(".runway-stage");
+  await expect(page.locator(".runway-model")).toHaveCount(5);
+  await page.waitForFunction(() => Array.from(document.querySelectorAll<HTMLImageElement>(".runway-model img")).every(img => img.complete && img.naturalWidth > 0));
+  const first = await page.locator(".runway-model").first().getAttribute("style");
+  for (const name of ["Aurelia", "Celeste", "Vivienne", "Elara", "Seraphina"]) {
+    await page.getByRole("button", { name: "Next gown", exact: true }).click();
+    await expect(page.locator(".runway-caption h3")).toContainText(name);
+  }
+  await scene.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.locator(".runway-caption h3")).toContainText("Aurelia");
+  await expect(page.locator(".runway-model").first()).not.toHaveAttribute("style", first!);
+  await page.locator(".runway-lookbook").screenshot({ path: "/workspace/outputs/depth-lookbook-tested.png" });
+  await page.getByRole("link", { name: "Request this silhouette" }).click();
+  await expect(page.getByRole("combobox", { name: "Selected gown", exact: true })).toHaveValue("Aurelia — Romantic Lace");
+});
+
+test("layered gift cylinder responds to controls and carries the selected gift into the preview", async ({ page }) => {
   await page.goto("/");
-  const cards = page.locator(".collection-card");
-  await expect(cards).toHaveCount(5);
-  await page.locator(".collection-section").scrollIntoViewIfNeeded();
-  await expect.poll(() => page.locator(".collection-card-reveal").first().evaluate(el => Number(getComputedStyle(el).opacity))).toBe(1);
-  await expect(page.locator(".collection-card-photo").first()).toHaveCSS("clip-path", "inset(0%)");
-  await expect(cards.first().locator("img")).toHaveCSS("object-fit", "cover");
-  await cards.first().hover();
-  await expect.poll(() => cards.first().locator("img").evaluate(el => getComputedStyle(el).transform)).not.toBe("none");
-  await page.locator(".collection-section").screenshot({ path: "/workspace/outputs/animated-bridal-cards.png" });
-  await expect(page.locator("#keepsakes .keepsake-card")).toHaveCount(5);
-  await expect(page.locator("#your-chapter .process-step")).toHaveCount(3);
-  await page.locator("#questions").scrollIntoViewIfNeeded();
-  await page.getByText("Can I personalise a gift?", { exact: true }).click();
-  await expect(page.locator("#questions details[open]")).toContainText("studio preview");
+  await page.locator("#keepsakes").scrollIntoViewIfNeeded();
+  await expect(page.locator(".cylinder-card")).toHaveCount(5);
+  await expect(page.locator(".cylinder-front")).toHaveCount(5);
+  await expect(page.locator(".cylinder-back")).toHaveCount(5);
+  await expect(page.locator(".cylinder-camera")).toHaveCSS("perspective", "1350px");
+  await expect(page.locator(".cylinder-scene")).toHaveCSS("touch-action", "pan-y");
+  await page.getByRole("button", { name: "Pause gift rotation" }).click();
+  await page.getByRole("button", { name: "Next gift", exact: true }).click();
+  await expect(page.locator(".cylinder-index strong")).toHaveText("Champagne flute");
+  await expect(page.locator(".cylinder-card").nth(1)).toHaveAttribute("style", /translateZ/);
+  await page.locator("#keepsakes").screenshot({ path: "/workspace/outputs/gift-cylinder-tested.png" });
+  await page.getByRole("link", { name: "Personalise champagne flute", exact: true }).click();
+  await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toHaveValue("Champagne flute");
+});
+
+test("vertical video categories reveal, autoplay and link to the existing pages on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/");
+  await page.locator(".video-categories").scrollIntoViewIfNeeded();
+  await expect(page.locator(".video-category")).toHaveCount(3);
+  await expect(page.locator(".video-category-grid")).toHaveClass(/is-visible/);
+  await expect(page.locator(".video-category h2").first()).toHaveCSS("writing-mode", "vertical-lr");
+  await page.locator(".video-category").nth(1).scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => { const v = document.querySelectorAll<HTMLVideoElement>(".video-category video")[1]; return v && !v.paused && v.currentTime > 0; });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole("link", { name: "personalise a gift", exact: true }).click();
+  await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toBeVisible();
 });
 
 test("4K starts on mobile without interaction even with data saver, repeats and supports byte ranges", async ({ page, request }) => {

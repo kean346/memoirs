@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import "../components/showcases.css";
 const display = localFont({
   src: [{ path: "../../public/fonts/playfair.ttf", weight: "400 900" }],
   variable: "--font-display",

@@ -43,6 +43,9 @@ import {
 } from "@/lib/model";
 import { exportPDF } from "@/lib/pdf";
 import VideoHero from "./video-hero";
+import RunwayLookbook from "./runway-lookbook";
+import GiftCylinder from "./gift-cylinder";
+import VideoCategories from "./video-categories";
 import GiftPreview, { giftImages } from "./gift-preview";
 import {
   gowns,
@@ -296,7 +299,7 @@ export default function Experience() {
           )}
           <main id="main">
             {path === "/" ? (
-              <Home />
+              <Home configure={updateConfig} />
             ) : path.startsWith("/collections") ? (
               <Collections path={path} data={data} configure={updateConfig} />
             ) : path === "/gallery" ? (
@@ -426,7 +429,7 @@ export default function Experience() {
     </>
   );
 }
-function Home() {
+function Home({ configure }: { configure: (c: Partial<Config>) => void }) {
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -441,38 +444,8 @@ function Home() {
             scrollTrigger: { trigger: el, start: "top 90%" },
           }),
         );
-        gsap.from(".intro", {
-          borderRadius: "50% 50% 0 0",
-          scrollTrigger: {
-            trigger: ".intro",
-            start: "top bottom",
-            end: "top 30%",
-            scrub: 1,
-          },
-        });
-        gsap.utils
-          .toArray<HTMLElement>(".collection-card-reveal")
-          .forEach((el, i) => {
-            gsap.from(el, {
-              y: 65,
-              autoAlpha: 0,
-              scale: 0.92,
-              rotation: i % 2 ? 2 : -2,
-              duration: 0.8,
-              delay: (i % 5) * 0.07,
-              ease: "back.out(1.3)",
-              scrollTrigger: {
-                trigger: el,
-                start: "top 92%",
-                toggleActions: "play none none reverse",
-              },
-            });
-          });
         gsap.utils.toArray<HTMLElement>(".frame-reveal").forEach((el, i) => {
           gsap.from(el, { y: 60, opacity: 0, duration: 1, delay: (i % 5) * 0.08, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 94%", toggleActions: "play none none reverse" } });
-        });
-        gsap.utils.toArray<HTMLElement>(".collection-card-photo").forEach((el) => {
-          gsap.fromTo(el, { clipPath: "inset(12% 5% 12% 5%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 93%", toggleActions: "play none none reverse" } });
         });
         gsap.from(".photo-stack .gallery-card", {
           x: (i) => (1 - i) * 160,
@@ -493,85 +466,13 @@ function Home() {
   return (
     <div ref={root}>
       <VideoHero />
-      <section id="introduction" className="intro section">
-        <div className="eyebrow">THE ART OF A BEAUTIFUL MOMENT</div>
-        <div className="intro-layout">
-          <h2 className="reveal">
-            Some moments
-            <br />
-            deserve something
-            <br />
-            <em>extraordinary.</em>
-          </h2>
-          <div>
-            <img
-              src={image(2)}
-              alt="AI-generated fictional wedding gown in a sunlit bridal atelier"
-              loading="lazy"
-            />
-            <p>
-              A gown that feels like you. A keepsake with your name. Thoughtful details for your most precious memories.
-            </p>
-            <p>
-              Discover our bridal boutique in Block 8, Gaborone, Botswana. Explore these fictional collections and begin your consultation.
-            </p>
-            <Link className="text-link" href="/collections">
-              Discover the collections <ArrowUpRight size={16} />
-            </Link>
-          </div>
-        </div>
+      <section id="introduction" className="editorial-invitation">
+        <p className="eyebrow reveal">GABORONE, BOTSWANA / A MORE PERSONAL KIND OF BRIDAL</p>
+        <h2 className="reveal">For the entrance.<br /><em>For the memories.</em><br />For you.</h2>
+        <div className="invitation-foot"><span>GOWNS & PERSONAL KEEPSAKES</span><p>A considered collection of silhouettes and little things with meaning. Made personal, from the first thought to the final detail.</p><Link href="/collections">Discover the edit <ArrowUpRight size={18} /></Link></div>
       </section>
-      <section className="section collection-section">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">A WORLD OF POSSIBILITIES</p>
-            <h2 className="reveal">
-              Made for <em>your moment.</em>
-            </h2>
-          </div>
-          <span className="muted">01 — 05 / THE COLLECTIONS</span>
-        </div>
-        <div className="collection-cards">
-          {categories.map((c, i) => (
-            <article className="collection-card-reveal" key={c}>
-              <Link
-                className="collection-card"
-                href={"/collections/" + slugs[i]}
-                onPointerMove={(e) => {
-                  if (e.pointerType === "touch") return;
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  e.currentTarget.style.setProperty(
-                    "--hover-x",
-                    ((e.clientX - rect.left) / rect.width - 0.5) * 12 + "px",
-                  );
-                }}
-                onPointerLeave={(e) =>
-                  e.currentTarget.style.setProperty("--hover-x", "0px")
-                }
-              >
-                <div className="collection-card-photo">
-                  <img
-                    src={collectionImage(i)}
-                    alt={c + " illustrative inspiration"}
-                    loading="lazy"
-                  />
-                  <span className="collection-number">0{i + 1}</span>
-                  <span className="collection-card-arrow">
-                    <ArrowUpRight size={18} />
-                  </span>
-                </div>
-                <div className="collection-card-copy">
-                  <h3>{c.split(" — ")[0]}<span className="collection-cut">{c.split(" — ")[1]}</span></h3>
-                  <p>{descriptions[i]}</p>
-                  <span className="collection-card-link">
-                    Explore collection <ArrowRight size={13} />
-                  </span>
-                </div>
-              </Link>
-            </article>
-          ))}
-        </div>
-      </section>
+      <RunwayLookbook select={gown => configure({ occasion: "Bridal Consultation", gown, officialPackage: gown })} />
+      <VideoCategories />
       <section className="studio-feature section">
         <img
           src="/images/bridal-robe.webp"
@@ -616,12 +517,7 @@ function Home() {
         </div>
         <Gallery compact />
       </section>
-      <section className="section keepsake-section" id="keepsakes">
-        <div className="section-heading"><div><p className="eyebrow">THE FINISHING TOUCHES / 01—05</p><h2 className="reveal">Little details.<br /><em>Lasting memories.</em></h2></div><Link className="text-link" href="/studio?request=gift">Make something yours <ArrowUpRight size={16} /></Link></div>
-        <div className="keepsake-grid">
-          {gifts.map((gift, i) => <Link className="keepsake-card frame-reveal" href={"/studio?request=gift&product=" + encodeURIComponent(gift)} key={gift}><div className="keepsake-photo"><img src={giftImages[gift]} alt={gift + " generated demonstration product"} loading="lazy" /><span className="keepsake-index">0{i + 1}</span><span className="keepsake-action"><Plus size={18} /></span></div><h3>{gift}</h3><p>YOUR NAME. YOUR COLOUR. YOUR STORY.</p></Link>)}
-        </div>
-      </section>
+      <GiftCylinder />
       <section className="boutique-story" id="boutique">
         <div className="boutique-photo frame-reveal"><img src={collectionImage(3)} alt="Generated couture bridal gown in a sunlit atelier" loading="lazy" /></div>
         <div className="boutique-copy"><p className="eyebrow reveal">PRECIOUS MEMOIRS / BLOCK 8, GABORONE</p><h2 className="reveal">A chapter<br />that feels<br /><em>entirely you.</em></h2><p className="reveal">The clean line of satin. A whisper of lace. A keepsake with your name. Discover the details that feel like your story, then bring your ideas into the bridal studio.</p><Link className="text-link" href="/studio">Begin your bridal brief <ArrowUpRight size={18} /></Link><span className="boutique-note">Fictional collection · Consultation availability confirmed on enquiry</span></div>
@@ -670,6 +566,7 @@ function Collections({
   const slug = path.split("/")[2];
   const legacy = ["romantic-proposals", "room-setups", "floral-arrangements", "balloon-styling", "heart-boxes", "bespoke-celebrations"];
   const index = slugs.includes(slug) ? slugs.indexOf(slug) : legacy.indexOf(slug) >= 0 ? Math.min(4, legacy.indexOf(slug)) : -1;
+  if (!slug) return <RunwayLookbook page select={gown => configure({ occasion: "Bridal Consultation", gown, officialPackage: gown })} />;
   if (slug && index < 0)
     return (
       <section className="page-title">

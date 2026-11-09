@@ -42,3 +42,17 @@ Playfair Display and Montserrat are hosted locally with their SIL OFL licences. 
 Products and names are fictional, with no confirmed inventory, advertised prices or appointment availability. The request demo stores data only in this browser/origin, using a separate Precious Memoirs storage key without deleting old application data. No email, WhatsApp messaging, payment, authentication or cross-device database integration is connected. Use fictional information. Backup/reset controls remain available. The server-only MongoDB adapter is an unused integration foundation, not a live backend.
 
 Original template HTML, LICENSE and historical credits are retained for provenance. See CREDITS.md for asset attribution. The social card and icon now use the Precious Memoirs text identity. Deployment settings and application architecture remain unchanged.
+
+## Reference-based lookbook and gift showcase
+
+The homepage and collection index now use a self-contained runway depth lookbook, adapted from the supplied Maison Vell reference. Drag horizontally, use the arrow controls/keys, or focus the stage and scroll; Shift+scroll also operates the lineup. A single progress value drives the depth, look number and paired-product rail. Ordinary scrolling outside the focused stage remains page scrolling. On phones, the product rail moves to the bottom.
+
+The gift section adapts the supplied 3D cylinder reference, with front/back faces, layered rims, magnetic dwell and pointer tilt. It pauses on hover, offers pause/step controls and links the selected product to the existing customiser. Both showcase animation loops stop offscreen or when the document is hidden. Reduced-motion preferences suppress automatic cylinder rotation and snap the runway directly to its target.
+
+Three full-height video categories use vertical labels, staggered one-shot reveals and the existing licensed local HD wedding footage, with playback suspended offscreen. The separate hero retains its existing 4K autoplay behaviour. No Tailwind, WebGL or additional runtime dependencies were added; the supplied interaction styling is scoped in `src/components/showcases.css`. Existing detail pages, enquiries, local persistence and management routes remain connected.
+
+## Supplied animation references
+
+The collection index and homepage bridal edit use a depth runway adapted from the supplied Maison Vell code: a shared floating progress value, tabulated depth stops, drag/keyboard/focused-wheel navigation, snapping, wrapped numbering and a synchronised product rail. Five new transparent gown adaptations are used in place of the reference's fashion sprite sheet. The gift grid is replaced by a perspective cylinder adapted from the supplied card code, including magnetic dwell, layered thickness, front/back faces and damped pointer tilt. Vertical video category panels adapt the supplied reveal, hover, vertical-title and pill-button treatment using existing local bridal footage.
+
+The former small introduction image has been replaced by a full-width typographic invitation. Section backgrounds alternate between warm stone, pale sage, ivory, charcoal and muted burgundy. The existing detail routes, studio, quotation flow and manager remain connected. Hero video behaviour was not changed in this reference-driven pass. The supplied examples were adapted as isolated React components with scoped CSS; no additional runtime dependencies were introduced.
