@@ -79,3 +79,7 @@ The active Next.js app is rebranded to Precious Memoirs. The original template a
 ### Generated bridal imagery refinement
 
 `public/images/gown-0.webp` through `gown-4.webp` and `bridal-robe.webp` were generated with OpenAI image generation for this fictional demo. They depict no verified business products. Each gown is a distinct generated design. WebP copies are compressed from the generated originals with no cropping. The robe uses a transparent generated base with live SVG colour, text and motif overlays. Old code-drawn gown SVGs are retained as unused historical assets.
+
+### Complete gift collection and media playback
+
+`bridal-flute.webp`, `bridal-slippers.webp`, `bridal-gift-box.webp` and `bridal-hanger.webp` are newly AI-generated fictional product cutouts. All five gift types now use generated imagery; live lettering and colour are applied by the studio. The original three credited Pexels 4K videos were remuxed to progressive fast-start MP4 containers without re-encoding; original compressed video packet hashes match. No source resolution or visual quality was reduced.

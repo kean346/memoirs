@@ -1,27 +1,47 @@
+import type { CSSProperties } from "react";
 import type { Config } from "@/lib/model";
 
-/** Visual product previews; robe imagery is AI generated, other products use original SVG artwork. */
+export const giftImages: Record<string, string> = {
+  "Bridal robe": "/images/bridal-robe.webp",
+  "Champagne flute": "/images/bridal-flute.webp",
+  "Bridal slippers": "/images/bridal-slippers.webp",
+  "Gift box": "/images/bridal-gift-box.webp",
+  "Personalised bridal hanger": "/images/bridal-hanger.webp",
+};
+const atmospheres = [
+  { background: "#f5eee6", accent: "#a48162", decoration: "❧" },
+  { background: "#f2deda", accent: "#a96770", decoration: "♡" },
+  { background: "#eee0c9", accent: "#a77c46", decoration: "✦" },
+  { background: "#e9cdd0", accent: "#92535e", decoration: "❧" },
+  { background: "#dac0c6", accent: "#713f4a", decoration: "♡" },
+  { background: "#f1efec", accent: "#57504a", decoration: "" },
+];
+const styleNames = ["Ivory Elegance", "Blush Romance", "Champagne Grace", "Dusty Rose", "Burgundy Detail", "Timeless Minimal"];
+
+/** Generated fictional product bases with live, persistent personalisation overlays. */
 export default function GiftPreview({ config: c }: { config: Config }) {
-  const fill = c.productColour;
+  const theme = atmospheres[Math.max(0, styleNames.indexOf(c.style))];
   const fontFamily = c.lettering === "Montserrat" ? "var(--font-sans)" : c.lettering === "Cursive" ? "cursive" : "var(--font-display)";
   const label = c.message || "Your name";
-  return <div className="gift-preview" aria-label="Live personalised gift preview">
-    <p className="eyebrow">YOUR PERSONALISED KEEPSAKE</p>
+  const slippers = c.product === "Bridal slippers";
+  const y = c.product === "Bridal robe" ? 105 : c.product === "Champagne flute" ? 170 : c.product === "Gift box" ? 275 : c.product === "Personalised bridal hanger" ? 235 : 165;
+  const maxText = slippers ? 68 : c.product === "Bridal robe" ? 130 : 160;
+  const lettering = { fontFamily, fontStyle: c.lettering === "Cursive" ? "italic" : undefined } as CSSProperties;
+  return <div className="gift-preview" data-style={c.style} style={{ "--preview-background": theme.background, "--preview-accent": theme.accent } as CSSProperties} aria-label="Live personalised gift preview">
+    <div className="preview-heading"><p className="eyebrow">THE PERSONALISATION ATELIER</p><span className="preview-live"><i /> LIVE PREVIEW</span></div>
+    <div className="preview-style" aria-live="polite"><span>{theme.decoration}</span> {c.style}</div>
     <svg viewBox="0 0 400 460" role="img" aria-label={`${c.product}, ${label}, ${c.lettering}, ${c.motif} motif`}>
-      <defs><filter id="robe-tint" colorInterpolationFilters="sRGB"><feFlood floodColor={fill} result="colour"/><feComposite in="colour" in2="SourceGraphic" operator="in" result="tint"/><feBlend in="SourceGraphic" in2="tint" mode="multiply"/></filter><filter id="gift-shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="14" stdDeviation="12" floodColor="#713f4a" floodOpacity=".16" /></filter><linearGradient id="gift-sheen"><stop stopColor="#fff" stopOpacity=".5"/><stop offset=".5" stopColor="#fff" stopOpacity="0"/><stop offset="1" stopColor="#713f4a" stopOpacity=".12"/></linearGradient></defs>
-      <g fill={fill} stroke="#bfae9f" strokeWidth="1.5" filter="url(#gift-shadow)">
-        {c.product === "Bridal robe" && <image href="/images/bridal-robe.webp" x="35" y="0" width="330" height="460" filter="url(#robe-tint)" />}
-        {c.product === "Champagne flute" && <><path d="M135 65H265L248 215Q240 265 200 265Q160 265 152 215Z"/><path d="M200 265V380M145 389Q200 365 255 389Z" fill="none" strokeWidth="4"/></>}
-        {c.product === "Gift box" && <><path d="M75 175H325V360H75Z"/><path d="M60 140H340V192H60Z"/><path d="M182 140H218V360H182Z" fill="#c49a68" stroke="none"/><path d="M200 140Q115 50 120 115Q125 150 200 140Q285 50 280 115Q275 150 200 140" fill="none" stroke="#c49a68" strokeWidth="12"/></>}
-        {c.product === "Bridal slippers" && <><path d="M90 110Q140 65 165 120L172 330Q170 380 120 380Q70 380 72 330Z"/><path d="M235 120Q260 65 310 110L328 330Q330 380 280 380Q230 380 228 330Z"/><path d="M80 190Q120 165 169 190L171 260Q120 240 77 260ZM231 190Q280 165 320 190L325 260Q280 240 230 260Z" fill="#fff" fillOpacity=".4"/></>}
-        {c.product === "Personalised bridal hanger" && <><path d="M180 95Q180 60 210 65Q245 80 205 120V145" fill="none" stroke="#c49a68" strokeWidth="7"/><path d="M205 145L50 260Q40 280 65 285H335Q360 280 345 260Z" strokeWidth="12" strokeLinejoin="round"/></>}
-        <path d="M0 0" fill="url(#gift-sheen)"/>
-      </g>
-      <g fill={c.textColour} style={{ fontFamily }}>
-        <text data-testid="preview-name" x="200" y={c.product === "Champagne flute" ? 180 : c.product === "Personalised bridal hanger" ? 268 : c.product === "Bridal slippers" ? 225 : c.product === "Gift box" ? 310 : 105} textAnchor="middle" fontSize={c.product === "Bridal robe" ? (label.length > 16 ? 12 : 20) : label.length > 22 ? 15 : 24} textLength={label.length > 22 ? 190 : undefined} lengthAdjust="spacingAndGlyphs">{label}</text>
-        {c.motif !== "None" && <text x="200" y={c.product === "Personalised bridal hanger" ? 235 : c.product === "Bridal robe" ? 127 : 340} textAnchor="middle" className="preview-motif" fontSize={c.product === "Bridal robe" ? "18" : "28"}>{c.motif === "Heart" ? "♡" : "❧"}</text>}
+      <defs><filter id="product-tint" colorInterpolationFilters="sRGB"><feFlood floodColor={c.productColour} result="colour"/><feComposite in="colour" in2="SourceGraphic" operator="in" result="tint"/><feBlend in="SourceGraphic" in2="tint" mode="multiply"/></filter></defs>
+      <image href={giftImages[c.product]} x="35" y="0" width="330" height="460" filter="url(#product-tint)" />
+      <g fill={c.textColour} style={lettering}>
+        <text data-testid="preview-name" x={slippers ? 125 : 200} y={y} textAnchor="middle" fontSize={slippers ? 14 : label.length > 20 ? 14 : 20} textLength={label.length > (slippers ? 9 : 16) ? maxText : undefined} lengthAdjust="spacingAndGlyphs">{label}</text>
+        {slippers && <text x="275" y={y} textAnchor="middle" fontSize="14" textLength={label.length > 9 ? maxText : undefined} lengthAdjust="spacingAndGlyphs">{label}</text>}
+        {c.motif !== "None" && <text x={slippers ? 125 : 200} y={y + 24} textAnchor="middle" className="preview-motif" fontSize="18">{c.motif === "Heart" ? "♡" : "❧"}</text>}
+        {slippers && c.motif !== "None" && <text x="275" y={y + 24} textAnchor="middle" className="preview-motif" fontSize="18">{c.motif === "Heart" ? "♡" : "❧"}</text>}
       </g>
     </svg>
-    <h2>{c.product}</h2><p>{c.quantity} {c.quantity === 1 ? "keepsake" : "keepsakes"} · Live personalisation preview</p>
+    <div className="preview-product"><h2>{c.product}</h2><span>× {c.quantity}</span></div>
+    <div className="preview-specs"><span style={{ color: c.textColour }}>Aa · {c.lettering}</span><span><i style={{ background: c.productColour }} /> Product colour</span><span>{c.motif === "None" ? "No motif" : c.motif + " motif"}</span></div>
+    <p className="preview-caption">Fictional product · Your lettering, colour and details update here</p>
   </div>;
 }

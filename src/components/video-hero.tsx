@@ -34,32 +34,15 @@ export default function VideoHero() {
     videos = useRef<(HTMLVideoElement | null)[]>([]);
   const [active, setActive] = useState(0),
     [paused, setPaused] = useState(false),
-    [reduced, setReduced] = useState(false),
     [visible, setVisible] = useState(true),
     [inView, setInView] = useState(true),
     [playing, setPlaying] = useState(false),
     [failed, setFailed] = useState<number[]>([]),
-    [motionReady, setMotionReady] = useState(false),
-    [mobile, setMobile] = useState(false),
-    [saveData, setSaveData] = useState(false);
+    [motionReady, setMotionReady] = useState(false);
   const running =
-    motionReady && !paused && !reduced && !saveData && visible && inView;
+    motionReady && !paused && visible && inView;
   useEffect(() => {
-    const query = matchMedia("(prefers-reduced-motion: reduce)");
-    const change = () => {
-      setReduced(query.matches);
-      setMotionReady(true);
-    };
-    const viewport = matchMedia("(max-width: 760px)");
-    const resize = () => setMobile(viewport.matches);
-    resize();
-    setSaveData(
-      !!(navigator as Navigator & { connection?: { saveData?: boolean } })
-        .connection?.saveData,
-    );
-    viewport.addEventListener("change", resize);
-    change();
-    query.addEventListener("change", change);
+    setMotionReady(true);
     const visibility = () => setVisible(!document.hidden);
     document.addEventListener("visibilitychange", visibility);
     const observer = new IntersectionObserver(
@@ -68,8 +51,6 @@ export default function VideoHero() {
     );
     if (root.current) observer.observe(root.current);
     return () => {
-      query.removeEventListener("change", change);
-      viewport.removeEventListener("change", resize);
       document.removeEventListener("visibilitychange", visibility);
       observer.disconnect();
     };
@@ -100,7 +81,7 @@ export default function VideoHero() {
       cancelled = true;
       clearTimeout(pauseOthers);
     };
-  }, [active, running, mobile]);
+  }, [active, running]);
   useEffect(() => {
     if (!running) return;
     let cancelled = false,
@@ -148,18 +129,19 @@ export default function VideoHero() {
               videos.current[i] = el;
             }}
             className={active === i ? "active" : ""}
-            src={
-              !motionReady || reduced || saveData || failed.includes(i)
-                ? undefined
-                : mobile
-                  ? scene.mobile
-                  : scene.src
-            }
-            poster={mobile ? scene.mobilePoster : scene.poster}
-            preload={i === active && running ? "auto" : "none"}
+            src={failed.includes(i) ? undefined : scene.src}
+            poster={scene.poster}
+            preload={i === active ? "auto" : i === (active + 1) % scenes.length && running ? "metadata" : "none"}
+            autoPlay={i === active}
             muted
             playsInline
             loop
+            onCanPlay={(e) => {
+              if (i === active && running) {
+                e.currentTarget.muted = true;
+                void e.currentTarget.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+              }
+            }}
             tabIndex={-1}
             onError={() =>
               setFailed((prev) => (prev.includes(i) ? prev : [...prev, i]))
@@ -228,26 +210,20 @@ export default function VideoHero() {
           <button
             className="cinema-pause"
             aria-label={
-              paused || reduced || saveData
+              paused
                 ? "Play background videos"
                 : "Pause background videos"
             }
             aria-pressed={paused}
-            onClick={() => {
-              if (reduced || saveData) {
-                setSaveData(false);
-                setReduced(false);
-                setPaused(false);
-              } else setPaused(!paused);
-            }}
+            onClick={() => setPaused(!paused)}
           >
-            {paused || reduced || saveData ? (
+            {paused ? (
               <Play size={13} />
             ) : (
               <Pause size={13} />
             )}
             <span>
-              {paused || reduced || saveData ? "PLAY FILM" : "PAUSE FILM"}
+              {paused ? "RESUME FILM" : "PAUSE FILM"}
             </span>
           </button>
         </div>
@@ -256,7 +232,7 @@ export default function VideoHero() {
             Visual inspiration · Explore your experience below
           </span>
         )}
-        {!playing && !reduced && !paused && (
+        {!playing && !paused && (
           <span className="sr-only">
             The film is loading. You can explore the studio while it loads.
           </span>

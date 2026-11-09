@@ -2747,3 +2747,97 @@ input[type="color"] { width: 100%; height: 48px; padding: 4px; cursor: pointer; 
 .collection-detail > img,
 .collection-card-photo img,
 .moodboard-main > img { object-fit: contain; background: #e9dfd3; }
+
+/* Full-bleed bridal frames and the existing collection runway. */
+.collection-detail > img, .collection-card-photo img, .moodboard-main > img { object-fit: cover; background: transparent; object-position: center 42%; }
+.collection-detail > img { height: auto; aspect-ratio: 2/3; }
+.collection-card { position: relative; border: 0; background: transparent; transform: translateX(var(--hover-x)); }
+.collection-card-reveal:nth-child(even) { padding-top: 34px; }
+.collection-card-copy { padding: 22px 4px 12px; border-bottom: 1px solid #c49a6870; }
+.collection-card-copy h3 { font-size: clamp(27px, 2.4vw, 40px); min-height: 0; }
+.collection-card-copy p { min-height: 54px; font-size: 11px; }
+.collection-cut { display: block; font-size: 9px; font-family: var(--font-sans); letter-spacing: .13em; text-transform: uppercase; color: var(--accent); margin-top: 10px; }
+.collection-card-photo { border-radius: 140px 140px 3px 3px; isolation: isolate; }
+.collection-card-photo::after { content: ""; position: absolute; inset: 8px; border: 1px solid #fff8; border-radius: inherit; pointer-events: none; transition: inset .6s, border-color .6s; }
+.collection-card:hover .collection-card-photo::after, .collection-card:focus-visible .collection-card-photo::after { inset: 14px; border-color: #fff; }
+.collection-card:hover, .collection-card:focus-visible { box-shadow: none; transform: translateX(var(--hover-x)) translateY(-9px); }
+.collection-card:hover .collection-card-photo img, .collection-card:focus-visible .collection-card-photo img { transform: scale(1.08) translateX(calc(var(--hover-x) * -.5)); }
+.collection-number { border-radius: 100%; width: 30px; height: 30px; display: grid; place-items: center; top: auto; bottom: 14px; left: 14px; padding: 0; }
+.collection-card-arrow { border-radius: 100%; width: 36px; height: 36px; }
+.collection-card-link { letter-spacing: .08em; text-transform: uppercase; }
+.collection-section > .section-heading { align-items: end; }
+.keepsake-section { background: #eee1d8; }
+.keepsake-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px; }
+.keepsake-card { display: block; min-width: 0; }
+.keepsake-photo { position: relative; aspect-ratio: 3/4; background: #faf5f080; overflow: hidden; border: 1px solid #c49a6840; }
+.keepsake-photo img { width: 100%; height: 100%; object-fit: contain; transition: transform .7s cubic-bezier(.2,.7,.2,1); }
+.keepsake-card:hover img, .keepsake-card:focus-visible img { transform: scale(1.07) rotate(-2deg); }
+.keepsake-index { position: absolute; top: 14px; left: 14px; font-size: 10px; color: var(--accent); }
+.keepsake-action { position: absolute; bottom: 12px; right: 12px; border-radius: 50%; padding: 9px; background: var(--porcelain); display: flex; transition: transform .4s; }
+.keepsake-card:hover .keepsake-action { transform: rotate(90deg); }
+.keepsake-card h3 { font-size: 24px; margin: 17px 0 9px; line-height: 1.2; }
+.keepsake-card p { font-size: 8px; letter-spacing: .12em; color: var(--accent); }
+.boutique-story { display: grid; grid-template-columns: 1fr 1fr; background: var(--accent); color: var(--porcelain); overflow: hidden; }
+.boutique-photo { min-height: 780px; overflow: hidden; }
+.boutique-photo img { height: 100%; width: 100%; object-fit: cover; }
+.boutique-copy { padding: 90px 12%; align-self: center; }
+.boutique-copy h2 { font-size: clamp(52px, 5.4vw, 90px); line-height: 1.06; margin: 32px 0; }
+.boutique-copy h2 em { color: #ead3bc; }
+.boutique-copy > p:not(.eyebrow) { font-size: 14px; max-width: 38ch; color: #faf5f0cf; }
+.boutique-copy .text-link { color: var(--porcelain); margin-top: 25px; }
+.boutique-note { display: block; margin-top: 50px; font-size: 9px; color: #faf5f0a6; }
+.process-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7%; }
+.process-step { border-top: 1px solid var(--gold); padding-top: 24px; }
+.process-step > span { font-family: var(--font-display); font-size: 64px; color: var(--accent); font-style: italic; }
+.process-step h3 { font-size: 32px; margin: 15px 0; }
+.process-step p { max-width: 34ch; font-size: 13px; margin-bottom: 30px; color: var(--muted); }
+.bridal-faq { display: grid; grid-template-columns: 1fr 1.2fr; gap: 10%; background: #eee1d85c; }
+.bridal-faq h2 { font-size: clamp(44px, 4.8vw, 75px); line-height: 1.1; }
+.bridal-faq details { border-bottom: 1px solid #c49a6870; padding: 22px 0; }
+.bridal-faq summary { cursor: pointer; display: flex; justify-content: space-between; gap: 20px; font-size: 14px; list-style: none; }
+.bridal-faq summary::-webkit-details-marker { display: none; }
+.bridal-faq details[open] svg { transform: rotate(45deg); }
+.bridal-faq details p { font-size: 12px; color: var(--muted); padding-top: 15px; max-width: 52ch; }
+/* A selected style changes the composition around the generated product. */
+.gift-preview { background: var(--preview-background, #f5eee6); border: 1px solid var(--preview-accent, #a48162); position: relative; transition: background .45s, border-color .45s; padding: 25px; }
+.gift-preview::before { content: ""; position: absolute; inset: 9px; border: 1px solid var(--preview-accent); opacity: .24; pointer-events: none; border-radius: 150px 150px 0 0; }
+.gift-preview[data-style="Timeless Minimal"]::before { border-radius: 0; }
+.preview-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; position: relative; }
+.preview-heading .eyebrow { font-size: 8px; }
+.preview-live { font-size: 8px; letter-spacing: .1em; color: var(--accent); white-space: nowrap; }
+.preview-live i { display: inline-block; width: 5px; height: 5px; background: #6c8060; border-radius: 50%; margin-right: 3px; }
+.preview-style { font-family: var(--font-display); font-size: 20px; color: var(--preview-accent); margin: 12px 0 0; }
+.preview-style > span { margin-right: 6px; }
+.preview-product { display: flex; align-items: center; justify-content: center; gap: 18px; }
+.preview-product h2 { font-size: 30px; }
+.preview-product > span { font-size: 14px; color: var(--accent); }
+.preview-specs { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 16px; margin: 15px 0; font-size: 10px; }
+.preview-specs > span { display: inline-flex; align-items: center; gap: 5px; }
+.preview-specs i { width: 12px; height: 12px; border: 1px solid #713f4a70; border-radius: 50%; display: inline-block; }
+.gift-preview .preview-caption { font-size: 9px; letter-spacing: 0; color: #51413e; }
+@media (max-width: 1100px) { .keepsake-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .boutique-copy { padding: 60px 10%; } }
+@media (max-width: 760px) {
+  .collection-card-reveal:nth-child(even) { padding-top: 0; }
+  .collection-card { grid-template-columns: 42% 1fr; gap: 0; }
+  .collection-card-photo { border-radius: 90px 90px 2px 2px; min-height: 250px; }
+  .collection-card-copy { padding: 25px 0 20px 20px; align-self: center; }
+  .collection-card-copy h3 { font-size: 32px; }
+  .collection-cut { font-size: 8px; }
+  .collection-card-copy p { min-height: 0; }
+  .collection-detail > img { height: auto; }
+  .keepsake-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 14px; }
+  .keepsake-card:last-child { grid-column: 1/-1; max-width: 70%; justify-self: center; width: 100%; }
+  .boutique-story { grid-template-columns: 1fr; }
+  .boutique-photo { min-height: 0; height: 580px; }
+  .boutique-copy { padding: 60px 7%; }
+  .boutique-copy h2 { font-size: 68px; }
+  .process-grid { grid-template-columns: 1fr; gap: 45px; }
+  .process-step p { max-width: none; }
+  .bridal-faq { grid-template-columns: 1fr; gap: 25px; }
+  .preview-heading { flex-direction: column; gap: 2px; }
+  .gift-preview { padding: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .collection-card:hover, .collection-card:focus-visible, .keepsake-card:hover img, .keepsake-card:focus-visible img { transform: none; }
+  .gift-preview, .keepsake-photo img { transition: none; }
+}

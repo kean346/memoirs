@@ -5,7 +5,7 @@ export default defineConfig({
   testMatch: "*.spec.ts",
   timeout: 60000,
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3000",
     browserName: "chromium",
     launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH, downloadsPath: path.resolve("../work/downloads") },
   },

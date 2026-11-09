@@ -43,7 +43,7 @@ import {
 } from "@/lib/model";
 import { exportPDF } from "@/lib/pdf";
 import VideoHero from "./video-hero";
-import GiftPreview from "./gift-preview";
+import GiftPreview, { giftImages } from "./gift-preview";
 import {
   gowns,
   gifts,
@@ -143,7 +143,8 @@ export default function Experience() {
   }, []);
   useEffect(() => {
     if (path === "/studio" && searchParams.get("request") === "gift") {
-      setConfig(current => ({ ...current, occasion: "Personalised Gift" }));
+      const product = searchParams.get("product");
+      setConfig(current => ({ ...current, occasion: "Personalised Gift", ...(product && gifts.includes(product) ? { product } : {}) }));
     }
   }, [path, searchParams]);
   const updateConfig = (patch: Partial<Config>) => {
@@ -467,6 +468,12 @@ function Home() {
               },
             });
           });
+        gsap.utils.toArray<HTMLElement>(".frame-reveal").forEach((el, i) => {
+          gsap.from(el, { y: 60, opacity: 0, duration: 1, delay: (i % 5) * 0.08, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 94%", toggleActions: "play none none reverse" } });
+        });
+        gsap.utils.toArray<HTMLElement>(".collection-card-photo").forEach((el) => {
+          gsap.fromTo(el, { clipPath: "inset(12% 5% 12% 5%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 93%", toggleActions: "play none none reverse" } });
+        });
         gsap.from(".photo-stack .gallery-card", {
           x: (i) => (1 - i) * 160,
           y: (i) => Math.abs(i - 1) * 70,
@@ -554,7 +561,7 @@ function Home() {
                   </span>
                 </div>
                 <div className="collection-card-copy">
-                  <h3>{c}</h3>
+                  <h3>{c.split(" — ")[0]}<span className="collection-cut">{c.split(" — ")[1]}</span></h3>
                   <p>{descriptions[i]}</p>
                   <span className="collection-card-link">
                     Explore collection <ArrowRight size={13} />
@@ -608,6 +615,34 @@ function Home() {
           </Link>
         </div>
         <Gallery compact />
+      </section>
+      <section className="section keepsake-section" id="keepsakes">
+        <div className="section-heading"><div><p className="eyebrow">THE FINISHING TOUCHES / 01—05</p><h2 className="reveal">Little details.<br /><em>Lasting memories.</em></h2></div><Link className="text-link" href="/studio?request=gift">Make something yours <ArrowUpRight size={16} /></Link></div>
+        <div className="keepsake-grid">
+          {gifts.map((gift, i) => <Link className="keepsake-card frame-reveal" href={"/studio?request=gift&product=" + encodeURIComponent(gift)} key={gift}><div className="keepsake-photo"><img src={giftImages[gift]} alt={gift + " generated demonstration product"} loading="lazy" /><span className="keepsake-index">0{i + 1}</span><span className="keepsake-action"><Plus size={18} /></span></div><h3>{gift}</h3><p>YOUR NAME. YOUR COLOUR. YOUR STORY.</p></Link>)}
+        </div>
+      </section>
+      <section className="boutique-story" id="boutique">
+        <div className="boutique-photo frame-reveal"><img src={collectionImage(3)} alt="Generated couture bridal gown in a sunlit atelier" loading="lazy" /></div>
+        <div className="boutique-copy"><p className="eyebrow reveal">PRECIOUS MEMOIRS / BLOCK 8, GABORONE</p><h2 className="reveal">A chapter<br />that feels<br /><em>entirely you.</em></h2><p className="reveal">The clean line of satin. A whisper of lace. A keepsake with your name. Discover the details that feel like your story, then bring your ideas into the bridal studio.</p><Link className="text-link" href="/studio">Begin your bridal brief <ArrowUpRight size={18} /></Link><span className="boutique-note">Fictional collection · Consultation availability confirmed on enquiry</span></div>
+      </section>
+      <section className="section bridal-process" id="your-chapter">
+        <div className="section-heading"><div><p className="eyebrow">FROM A FIRST THOUGHT TO A PRECIOUS MEMORY</p><h2 className="reveal">Your bridal chapter,<br /><em>beautifully considered.</em></h2></div></div>
+        <div className="process-grid">{[
+          ["01", "Find your feeling.", "Explore satin, lace and soft silhouettes. Save the gown that feels most like you.", "/collections", "Explore the gowns"],
+          ["02", "Make your mark.", "Add a name, choose your lettering and colour, and watch your keepsake come together in the live preview.", "/studio?request=gift", "Personalise a keepsake"],
+          ["03", "Share your story.", "Build your brief and request a consultation or quotation. Dates, availability and final details need confirmation.", "/studio", "Create your brief"],
+        ].map(([n, title, copy, href, cta]) => <article className="process-step frame-reveal" key={n}><span>{n}</span><h3>{title}</h3><p>{copy}</p><Link className="text-link" href={href}>{cta} <ArrowUpRight size={16} /></Link></article>)}</div>
+      </section>
+      <section className="section bridal-faq" id="questions">
+        <div><p className="eyebrow">BEFORE YOUR NEXT CHAPTER</p><h2 className="reveal">A few<br /><em>thoughtful answers.</em></h2></div>
+        <div>{[
+          ["Can I personalise a gift?", "Yes. Choose a robe, champagne flute, slippers, gift box or bridal hanger. Your lettering, product colour and decorative details appear in the studio preview."],
+          ["Are these gowns available to buy?", "The gowns and product imagery are generated demonstration concepts. Confirm real stock, sizing and materials with Precious Memoirs before making plans."],
+          ["How do I request a consultation?", "Select a gown and share your wedding date and preferences in the studio. This demonstration saves the request in this browser; it does not send an email or reserve a fitting."],
+          ["Can I save my design?", "Your draft saves in this browser as you make changes. Completed demo requests appear in Studio Manager, with their personalisation details retained."],
+          ["Where is Precious Memoirs?", "The business location supplied for this concept is Block 8, Gaborone, Botswana. Appointment times and directions require business confirmation."],
+        ].map(([question, answer]) => <details key={question}><summary>{question}<Plus size={17} /></summary><p>{answer}</p></details>)}</div>
       </section>
       <section className="closing section">
         <p className="eyebrow">EVERY DETAIL TELLS A STORY</p>
