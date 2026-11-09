@@ -75,3 +75,7 @@ The active Next.js app is rebranded to Precious Memoirs. The original template a
 - Playfair Display and Montserrat: Google Fonts, SIL Open Font License; original font files and licence text downloaded from the official google/fonts repository and hosted locally.
 - Existing Pexels 4K wedding footage is retained with its original credits and licences in the manifest. Stock inspiration does not represent Precious Memoirs work.
 - The Precious Memoirs text wordmark, icon and generated social card are provisional. No official logo was supplied in this session.
+
+### Generated bridal imagery refinement
+
+`public/images/gown-0.webp` through `gown-4.webp` and `bridal-robe.webp` were generated with OpenAI image generation for this fictional demo. They depict no verified business products. Each gown is a distinct generated design. WebP copies are compressed from the generated originals with no cropping. The robe uses a transparent generated base with live SVG colour, text and motif overlays. Old code-drawn gown SVGs are retained as unused historical assets.

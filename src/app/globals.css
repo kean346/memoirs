@@ -2720,20 +2720,30 @@ dialog::backdrop {
   }
 }
 
-/* Rebrand tokens retain the original layout and animation rules. */
+/* Visual rebrand: original page grids, spacing and motion rules remain above. */
 :root { --dusty-rose: #a96770; }
-.gift-preview { padding: 24px; text-align: center; background: linear-gradient(145deg, var(--porcelain), var(--blush)); }
-.gift-preview svg { display: block; width: 100%; max-height: 520px; }
-.gift-preview h2 { margin: 0; font-size: 28px; }
-.gift-preview p { margin: 8px 0; }
+.gift-preview { padding: 28px; text-align: center; background: #f3e9e4; border: 1px solid #e5d6cc; }
+.gift-preview svg { display: block; width: 100%; max-height: 520px; overflow: visible; }
+.gift-preview h2 { margin: 0; font-size: 32px; }
+.gift-preview p { margin: 8px 0; color: #713f4a; }
 input[type="color"] { width: 100%; height: 48px; padding: 4px; cursor: pointer; }
 .cinema-intro .text-link { margin-top: 14px; color: inherit; }
-.cinema-bottom h1 { font-size: clamp(58px, 9vw, 145px); }
 .brand { max-width: 190px; }
-@media (max-width: 760px) { .cinema-bottom h1 { font-size: clamp(54px, 15vw, 92px); } .brand { max-width: 150px; } }
 .cinema-bottom h1 > span:first-child,
-.cinema-bottom h1 > span:nth-child(2) { font-family: var(--font-display), Georgia, serif; font-size: clamp(76px, 10vw, 160px); letter-spacing: -.06em; }
+.cinema-bottom h1 > span:nth-child(2) { font-family: var(--font-display), Georgia, serif; font-size: clamp(100px, 13.7vw, 215px); letter-spacing: -.065em; }
+.moodboard-main > img { object-fit: cover; object-position: center 38%; }
+.builder .field > span { color: #51413e; font-size: 12px; font-weight: 500; }
+.builder input:not([type="color"]), .builder select, .builder textarea { background: #fffdfa; border-color: #d8c3b7; color: #242020; }
+.gift-preview .preview-caption { font-size: 11px; letter-spacing: .08em; margin-top: 18px; }
+.preview-motif { font-family: Georgia, serif; }
 @media (max-width: 760px) {
+  .brand { max-width: 150px; }
   .cinema-bottom h1 > span:first-child,
-  .cinema-bottom h1 > span:nth-child(2) { font-size: 22vw; }
+  .cinema-bottom h1 > span:nth-child(2) { font-size: 23.5vw; }
+  .gift-preview { padding: 20px; }
+  .gift-preview svg { max-height: 350px; }
 }
+/* Show complete bridal silhouettes inside the original image containers. */
+.collection-detail > img,
+.collection-card-photo img,
+.moodboard-main > img { object-fit: contain; background: #e9dfd3; }

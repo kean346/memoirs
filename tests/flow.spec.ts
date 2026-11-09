@@ -91,7 +91,7 @@ test("mobile routes, local assets, navigation and reduced motion remain accessib
   await page.locator(".mobile-nav").getByRole("link", { name: "Collections", exact: true }).click();
   await expect(page).toHaveURL(/collections$/);
   await page.goto("/gallery");
-  await page.getByRole("button", { name: /A garden kind of romance/ }).click();
+  await page.getByRole("button", { name: /Satin, sculpted in light/ }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);

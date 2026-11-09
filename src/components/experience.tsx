@@ -49,7 +49,7 @@ import {
   gifts,
 } from "@/lib/catalogue";
 const KEY = "precious-memoirs-v1";
-const image = (i: number) => "/images/editorial-" + (i % 6) + ".jpg";
+const image = (i: number) => i % 6 === 5 ? "/images/bridal-robe.webp" : "/images/gown-" + (i % 5) + ".webp";
 const themeImage = (style: string) =>
   image([1, 2, 0, 5, 3, 4][Math.max(0, styles.indexOf(style))]);
 const categories = gowns;
@@ -62,7 +62,7 @@ const descriptions = [
   "Soft elegance. Effortless movement and considered detail.",
 ];
 const occasionDescriptions = ["Explore a fictional gown and request a bridal consultation.", "Create a personalised bridal gift and request a quotation."];
-const collectionImage = (i: number) => "/images/gown-" + i + ".svg";
+const collectionImage = (i: number) => "/images/gown-" + i + ".webp";
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="field">
@@ -499,7 +499,7 @@ function Home() {
           <div>
             <img
               src={image(2)}
-              alt="Wedding inspiration with delicate florals"
+              alt="AI-generated fictional wedding gown in a sunlit bridal atelier"
               loading="lazy"
             />
             <p>
@@ -567,8 +567,8 @@ function Home() {
       </section>
       <section className="studio-feature section">
         <img
-          src={image(1)}
-          alt="Blush rose bouquets arranged along a wooden table"
+          src="/images/bridal-robe.webp"
+          alt="Fictional satin bridal robe ready for personalisation"
           loading="lazy"
         />
         <div className="reveal">
@@ -676,7 +676,7 @@ function Collections({
             <p className="eyebrow">0{i + 1} / CURATED POSSIBILITIES</p>
             <h2>{categories[i]}</h2>
             <p>{descriptions[i]}</p>
-            <p className="note">Fictional demonstration gown. Original illustration; bridal photography and confirmed inventory are pending.</p>
+            <p className="note">Fictional demonstration gown. AI-generated bridal imagery; not confirmed inventory.</p>
             <p className="price">Price on request</p>
             <small>Request a consultation to discuss availability, sizing and your wedding day.</small>
             <Link
@@ -702,16 +702,16 @@ function Gallery({ compact = false }: { compact?: boolean }) {
   const [filter, setFilter] = useState("All"),
     [open, setOpen] = useState<number | null>(null);
   const titles = [
-    "A garden kind of romance",
-    "Blush, in full bloom",
-    "The quiet beauty of ivory",
-    "Flowers by candlelight",
-    "An overhead floral dream",
-    "A little everyday sunshine",
+    "Satin, sculpted in light",
+    "The romance of lace",
+    "Quiet modern elegance",
+    "A statement to remember",
+    "Softness in every fold",
+    "A keepsake, made yours",
   ];
   const indices = (compact ? [0, 1, 2] : [0, 1, 2, 3, 4, 5]).filter(
     (i) =>
-      filter === "All" || (filter === "Florals" ? i !== 0 : i === 0 || i === 3),
+      filter === "All" || (filter === "Gowns" ? i < 5 : i === 5),
   );
   return (
     <>
@@ -726,7 +726,7 @@ function Gallery({ compact = false }: { compact?: boolean }) {
             <em>in frames.</em>
           </h1>
           <div className="filters">
-            {["All", "Florals", "Celebrations"].map((f) => (
+            {["All", "Gowns", "Gifts"].map((f) => (
               <button
                 aria-pressed={filter === f}
                 className={filter === f ? "active" : ""}
@@ -755,8 +755,7 @@ function Gallery({ compact = false }: { compact?: boolean }) {
         <Modal title={titles[open]} close={() => setOpen(null)}>
           <img className="modal-photo" src={image(open)} alt={titles[open]} />
           <p>
-            Editorial moodboard reference. This photograph is inspiration, not a
-            verified Precious Memoirs product.
+            AI-generated editorial inspiration. This fictional design is not confirmed Precious Memoirs inventory.
           </p>
           <div className="actions">
             <button onClick={() => setOpen((open + 5) % 6)}>← Previous</button>
@@ -906,9 +905,9 @@ function Studio({
       </div>
       <div className="builder">
         <aside className="moodboard">
-          {c.occasion === "Personalised Gift" ? <GiftPreview config={c} /> : <div className="moodboard-main"><img src={collectionImage(Math.max(0, gowns.indexOf(c.gown)))} alt={c.gown + " original illustration"} /><div><span className="eyebrow">YOUR BRIDAL CONSULTATION</span><h2>{c.gown}</h2></div></div>}
+          {c.occasion === "Personalised Gift" ? <GiftPreview config={c} /> : <div className="moodboard-main"><img src={collectionImage(Math.max(0, gowns.indexOf(c.gown)))} alt={c.gown + " AI-generated demonstration image"} /><div><span className="eyebrow">YOUR BRIDAL CONSULTATION</span><h2>{c.gown}</h2></div></div>}
           <div className="palette"><i style={{ background: c.productColour }} /><i style={{ background: c.textColour }} /><span>{c.style}</span></div>
-          <small>Illustrative preview, not a product photograph. Gowns are fictional demonstration styles. Final materials and availability require confirmation.</small>
+          <small>Fictional demonstration products. AI-generated imagery; final materials and availability require confirmation.</small>
         </aside>
         <div className="builder-controls">
           <p className="eyebrow">STEP 0{step + 1} / 06</p>
