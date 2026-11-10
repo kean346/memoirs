@@ -107,7 +107,7 @@
 .studio-feature { background: #f4eee6; }
 .boutique-story { background: #58464a; }
 .bridal-process { background: #d8d9cb; }
-.bridal-faq { background: #425c50; color: #faf4e9; --muted: #e0dfd2; }
+.bridal-faq { background: linear-gradient(180deg,#354e43 0%,#395247 160px); color: #faf4e9; --muted: #e0dfd2; }
 .bridal-faq .eyebrow,.bridal-faq h2 em { color: #ead7ba; }
 .bridal-faq details { border-bottom-color: #c9b39455; }
 .closing { background: #ddd0c6; }
