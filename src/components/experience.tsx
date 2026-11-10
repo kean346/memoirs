@@ -340,11 +340,7 @@ export default function Experience() {
           </footer>
         </>
       )}
-      {!tour ? (
-        <button className={"tour-launch" + (!admin ? " tour-launch-marketing" : "")} onClick={() => setTour(true)}>
-          Explore the Experience <ArrowUpRight size={16} />
-        </button>
-      ) : (
+      {tour && (
         <div className="tour">
           <span className="eyebrow">
             A MEMORY, FROM IDEA TO CONFIRMED ORDER
