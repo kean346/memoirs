@@ -49,14 +49,14 @@
 .runway-foot { display: flex; justify-content: space-between; align-items: center; padding: 0 3.5%; font-size: 8px; letter-spacing: .1em; border-top: 1px solid #26322f16; }
 .runway-foot a { letter-spacing: 0; }
 /* Video categories: the supplied three-column, vertical-title treatment. */
-.video-categories { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 0; background: white; color: white; }
+.video-categories { min-height: 0; display: flex; flex-direction: column; justify-content: center; padding: 0; background: #171b19; color: white; }
 .video-category-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); width: 100%; }
 .video-category { position: relative; min-height: 750px; padding: 48px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; overflow: hidden; opacity: 0; transform: translateY(48px); transition: opacity 1s ease-out,transform 1s ease-out; }
 .video-category-grid.is-visible .video-category { opacity: 1; transform: translateY(0); }
 .video-category video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s; }
 .video-category:hover video { transform: scale(1.05); }
-.video-category-shade { position: absolute; inset: 0; background: #0000001a; transition: background .5s; }
-.video-category:hover .video-category-shade { background: #0003; }
+.video-category-shade { position: absolute; inset: 0; background: linear-gradient(180deg,#0000001a 45%,#171b1980); transition: background .5s; }
+.video-category:hover .video-category-shade { background: linear-gradient(180deg,#0003 45%,#171b1999); }
 .video-category-index { position: relative; z-index: 1; font-size: 8px; letter-spacing: .15em; text-shadow: 0 1px 8px #000; }
 .video-category h2 { position: relative; z-index: 1; writing-mode: vertical-lr; transform: rotate(180deg); font-size: clamp(60px,5.2vw,96px); font-weight: 500; margin: 30px 0 55px; line-height: 1; transition: translate .5s; letter-spacing: -.055em; color: #fff; text-shadow: 0 2px 20px #0003; }
 .video-category:hover h2 { translate: 0 -8px; }
@@ -66,7 +66,7 @@
 .category-btn-primary:hover::before { transform: translateX(100%); }
 .category-btn-primary:active { transform: translateY(0); box-shadow: 0 2px 8px #0000001a; }
 /* Supplied cylinder motion, dressed as a keepsake card instead of a bank card. */
-.gift-cylinder-section { min-height: 850px; background: #171b19; color: #f6f0e7; display: grid; grid-template-columns: 45% 55%; overflow: hidden; }
+.gift-cylinder-section { min-height: 850px; background: linear-gradient(180deg,#171b19 70%,#202d28); color: #f6f0e7; display: grid; grid-template-columns: 45% 55%; overflow: hidden; }
 .cylinder-editorial { align-self: center; padding: 85px 0 85px 15%; position: relative; z-index: 3; }
 .cylinder-editorial > .eyebrow { color: #b6bfb0; font-size: 8px; }
 .cylinder-editorial h2 { font-size: clamp(56px,5.6vw,96px); line-height: .98; letter-spacing: -.055em; margin: 40px 0 30px; font-weight: 400; }
@@ -107,7 +107,9 @@
 .studio-feature { background: #f4eee6; }
 .boutique-story { background: #58464a; }
 .bridal-process { background: #d8d9cb; }
-.bridal-faq { background: #ece7dd; }
+.bridal-faq { background: #202d28; color: #eee8db; --muted: #cec7b9; }
+.bridal-faq .eyebrow,.bridal-faq h2 em { color: #c9b394; }
+.bridal-faq details { border-bottom-color: #c9b39455; }
 .closing { background: #ddd0c6; }
 @media(max-width:1100px) {
   .video-category { padding: 32px; }
@@ -190,7 +192,7 @@
 .teaser-stage-label { position: absolute; left: 10%; right: 10%; top: 45px; z-index: 2; text-align: center; font-size: 8px; letter-spacing: .14em; color: #e4ceb1; }
 .teaser-stage-caption { position: absolute; left: 10%; right: 10%; bottom: 42px; z-index: 2; display: flex; justify-content: space-between; gap: 12px; font-size: 7px; letter-spacing: .09em; color: #e4ceb1; }
 @keyframes keepsake-drift { 0%,100% { transform: translateY(7px) rotate(-1deg); } 50% { transform: translateY(-7px) rotate(1deg); } }
-.inspiration-section { background: #f0ede7; padding-bottom: 120px; }
+.inspiration-section { background: linear-gradient(180deg,#edf0e9,#f0ede7 220px); padding-bottom: 120px; }
 .fluid-gallery { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 5%; align-items: start; padding: 20px 0; }
 .fluid-gallery-item { min-width: 0; }
 .fluid-gallery-item:nth-child(1) { padding-top: 55px; }

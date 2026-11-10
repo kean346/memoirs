@@ -60,3 +60,5 @@ The supplied examples were adapted as scoped React components and CSS, without a
 The current proposed gift collection comprises a bridal morning set, bridesmaid proposal box, engraved champagne duo, pearl jewellery keepsake and satin bridal robe. New generated transparent product images support live lettering previews. The homepage inspiration edit uses distinct accessory, bridal-party and stationery scenes. These are proposed concepts, not business-confirmed stock. Category camera movement is halved from the previous loops.
 
 The satin bridal robe has no name/motif overlay or lettering controls; colour and quantity remain selectable. The hero films autoplay muted and loop with no play/pause button.
+
+Homepage section flow: hero → runway → inspiration gallery → category videos → gift cards → FAQ → footer. The video panels have no white spacer bands; their shading leads into the gift-card section. Gift cards blend toward the FAQ and footer’s shared deep-green palette.

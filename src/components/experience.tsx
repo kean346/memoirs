@@ -449,7 +449,6 @@ function Home({ configure }: { configure: (c: Partial<Config>) => void }) {
     <div ref={root}>
       <VideoHero />
       <RunwayLookbook select={gown => configure({ occasion: "Bridal Consultation", gown, officialPackage: gown })} />
-      <VideoCategories />
       <section className="section inspiration-section">
         <div className="section-heading">
           <div>
@@ -464,6 +463,7 @@ function Home({ configure }: { configure: (c: Partial<Config>) => void }) {
         </div>
         <Gallery compact />
       </section>
+      <VideoCategories />
       <GiftCylinder />
       <section className="section bridal-faq" id="questions">
         <div><p className="eyebrow">BEFORE YOUR NEXT CHAPTER</p><h2 className="reveal">A few<br /><em>thoughtful answers.</em></h2></div>
