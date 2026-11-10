@@ -61,4 +61,4 @@ The current proposed gift collection comprises a bridal morning set, bridesmaid 
 
 The satin bridal robe has no name/motif overlay or lettering controls; colour and quantity remain selectable. The hero films autoplay muted and loop with no play/pause button.
 
-Homepage section flow: hero → runway → inspiration gallery → category videos → gift cards → FAQ → footer. The video panels have no white spacer bands; their shading leads into the gift-card section. Gift cards blend toward the FAQ and footer’s shared deep-green palette.
+Homepage section flow: hero → runway → inspiration gallery → category videos → gift cards → FAQ → footer. The video panels have no white spacer bands; their shading leads into the gift-card section. The gift cards use soft forest green, the FAQ uses a slightly lighter green, and the footer switches to warm ivory with dark-green text.

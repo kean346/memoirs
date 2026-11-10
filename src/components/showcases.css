@@ -66,17 +66,17 @@
 .category-btn-primary:hover::before { transform: translateX(100%); }
 .category-btn-primary:active { transform: translateY(0); box-shadow: 0 2px 8px #0000001a; }
 /* Supplied cylinder motion, dressed as a keepsake card instead of a bank card. */
-.gift-cylinder-section { min-height: 850px; background: linear-gradient(180deg,#171b19 70%,#202d28); color: #f6f0e7; display: grid; grid-template-columns: 45% 55%; overflow: hidden; }
+.gift-cylinder-section { min-height: 850px; background: #354e43; color: #f6f0e7; display: grid; grid-template-columns: 45% 55%; overflow: hidden; }
 .cylinder-editorial { align-self: center; padding: 85px 0 85px 15%; position: relative; z-index: 3; }
 .cylinder-editorial > .eyebrow { color: #b6bfb0; font-size: 8px; }
 .cylinder-editorial h2 { font-size: clamp(56px,5.6vw,96px); line-height: .98; letter-spacing: -.055em; margin: 40px 0 30px; font-weight: 400; }
-.cylinder-editorial h2 em { color: #bea68b; }
-.cylinder-editorial > p:not(.eyebrow):not(.cylinder-note) { max-width: 34ch; font-size: 13px; color: #c5c9bf; line-height: 1.9; }
+.cylinder-editorial h2 em { color: #e0c9a8; }
+.cylinder-editorial > p:not(.eyebrow):not(.cylinder-note) { max-width: 34ch; font-size: 13px; color: #e0e3d8; line-height: 1.9; }
 .cylinder-cta { display: inline-flex; align-items: center; gap: 25px; padding: 13px 0; border-bottom: 1px solid #d3c0a6; font-size: 11px; margin-top: 20px; }
 .cylinder-index { display: flex; flex-direction: column; gap: 7px; margin-top: 55px; }
-.cylinder-index span { font-size: 9px; letter-spacing: .15em; color: #a8b39f; }
+.cylinder-index span { font-size: 9px; letter-spacing: .15em; color: #d2d8c8; }
 .cylinder-index strong { font-family: var(--font-display); font-weight: 400; font-size: 27px; }
-.cylinder-editorial .cylinder-note { font-size: 8px; color: #98a291; margin-top: 24px; }
+.cylinder-editorial .cylinder-note { font-size: 8px; color: #cad3c1; margin-top: 24px; }
 .cylinder-scene { position: relative; min-height: 850px; touch-action: pan-y; user-select: none; overflow: hidden; cursor: grab; outline-offset: -4px; background: radial-gradient(ellipse at 50% 50%,#39433655,transparent 70%); }
 .cylinder-scene:active { cursor: grabbing; }
 .cylinder-camera { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; perspective: 1350px; pointer-events: none; }
@@ -107,8 +107,8 @@
 .studio-feature { background: #f4eee6; }
 .boutique-story { background: #58464a; }
 .bridal-process { background: #d8d9cb; }
-.bridal-faq { background: #202d28; color: #eee8db; --muted: #cec7b9; }
-.bridal-faq .eyebrow,.bridal-faq h2 em { color: #c9b394; }
+.bridal-faq { background: #425c50; color: #faf4e9; --muted: #e0dfd2; }
+.bridal-faq .eyebrow,.bridal-faq h2 em { color: #ead7ba; }
 .bridal-faq details { border-bottom-color: #c9b39455; }
 .closing { background: #ddd0c6; }
 @media(max-width:1100px) {
@@ -215,22 +215,22 @@
 .cylinder-card-mark { width: 26px; height: 26px; display: grid; place-items: center; border: 1px solid #493a2c66; border-radius: 50%; }
 .cylinder-back-signature { font-size: 7px; letter-spacing: .16em; margin-top: auto; }
 .cylinder-autoplay .cylinder-front,.cylinder-autoplay .cylinder-back { pointer-events: none; }
-.professional-footer { background: #202d28; color: #eee8db; padding: 0; }
+.professional-footer { background: #eee7dc; color: #293e34; padding: 0; }
 .footer-main { display: grid; grid-template-columns: 1.2fr .8fr .95fr 1.35fr; gap: 6%; padding: 70px 7% 55px; }
-.footer-brand-block .brand { font-size: 35px; color: #f7eedc; display: inline-block; }
-.footer-brand-block p { margin: 23px 0; font-size: 12px; line-height: 1.8; color: #c5cdbf; }
-.footer-brand-block > span { font-size: 7px; letter-spacing: .12em; color: #acb9a6; }
+.footer-brand-block .brand { font-size: 35px; color: #293e34; display: inline-block; }
+.footer-brand-block p { margin: 23px 0; font-size: 12px; line-height: 1.8; color: #4f6055; }
+.footer-brand-block > span { font-size: 7px; letter-spacing: .12em; color: #5e6c5e; }
 .footer-main nav { display: flex; flex-direction: column; align-items: flex-start; gap: 13px; }
 .footer-main nav h2 { font: 500 10px var(--font-sans); letter-spacing: .08em; margin: 5px 0 13px; }
-.footer-main nav a { font-size: 10px; color: #c5cdbf; transition: color .2s; }
-.footer-main nav a:hover { color: #fff7e7; }
+.footer-main nav a { font-size: 10px; color: #4f6055; transition: color .2s; }
+.footer-main nav a:hover { color: #713f4a; }
 .footer-enquiry h2 { font-size: 29px; line-height: 1.1; margin: 0 0 18px; }
-.footer-enquiry p { font-size: 10px; line-height: 1.8; color: #c5cdbf; }
+.footer-enquiry p { font-size: 10px; line-height: 1.8; color: #4f6055; }
 .footer-enquiry > a { display: inline-flex; gap: 25px; align-items: center; font-size: 10px; padding: 10px 0; border-bottom: 1px solid #bbab8b; }
-.footer-bottom { margin: 0 7%; padding: 25px 0; border-top: 1px solid #c5cdbf33; display: flex; flex-wrap: wrap; align-items: center; gap: 15px 30px; color: #aeb9a6; font-size: 8px; }
+.footer-bottom { margin: 0 7%; padding: 25px 0; border-top: 1px solid #4f60552e; display: flex; flex-wrap: wrap; align-items: center; gap: 15px 30px; color: #5e6c5e; font-size: 8px; }
 .footer-bottom > span:last-child { margin-left: auto; }
 .footer-bottom button { padding: 0; border: 0; background: transparent; font-size: inherit; color: inherit; }
-.professional-footer .footer-demo-note { margin: 0; padding: 0 7% 25px; font-size: 8px; color: #aeb9a6; }
+.professional-footer .footer-demo-note { margin: 0; padding: 0 7% 25px; font-size: 8px; color: #5e6c5e; }
 .tour-launch-marketing { display: none; }
 .privacy-information { padding: 75px 7% 100px; max-width: 1000px; }
 .privacy-information h1 { font-size: clamp(48px,6vw,80px); margin-bottom: 35px; }
