@@ -10,7 +10,7 @@ import { useInView, wrap } from "./showcase-hooks";
 export default function GiftCylinder() {
   const { ref: root, visible } = useInView<HTMLElement>(.08);
   const scene = useRef<HTMLDivElement>(null), cards = useRef<(HTMLDivElement | null)[]>([]);
-  const motion = useRef({ progress: 0, target: 0 });
+  const motion = useRef({ elapsed: 0 });
   const wake = useRef<() => void>(() => {});
   const [active, setActive] = useState(0);
   useEffect(() => {
@@ -20,11 +20,13 @@ export default function GiftCylinder() {
     const state = motion.current, smooth = (v: number) => v * v * (3 - 2 * v);
     const tick = (now: number) => {
       frame = 0; if (disposed) return; const dt = Math.min(50, now - last) || 16; last = now;
-      const automatic = true;
-      if (automatic) state.target += dt * .00013;
-      state.progress = state.progress + (state.target - state.progress) * (1 - Math.exp(-dt * .009));
-      const rounded = Math.round(state.progress), diff = state.progress - rounded;
-      const virtual = rounded + Math.sign(diff) * Math.pow(Math.abs(diff) * 2, 2.2) / 2;
+      // Hold each front card for two seconds, then move briskly to the next.
+      const hold = 2000, transition = 800, cycle = hold + transition;
+      state.elapsed += dt;
+      const turn = Math.floor(state.elapsed / cycle);
+      const phase = Math.max(0, (state.elapsed % cycle - hold) / transition);
+      const virtual = turn + smooth(phase);
+      const rounded = Math.round(virtual);
       cards.current.forEach((card, i) => {
         if (!card) return;
         let offset = i - virtual; while (offset > gifts.length / 2) offset -= gifts.length; while (offset < -gifts.length / 2) offset += gifts.length;
@@ -36,8 +38,7 @@ export default function GiftCylinder() {
         card.style.zIndex = String(Math.round(z + 500)); card.style.opacity = String(Math.min(1, (2.5 - abs) * 3));
       });
       const index = wrap(rounded, gifts.length); if (index !== previous) { previous = index; setActive(index); }
-      const settling = Math.abs(state.target - state.progress) > .0002;
-      if (visible && !document.hidden && (automatic || settling)) frame = requestAnimationFrame(tick);
+      if (visible && !document.hidden) frame = requestAnimationFrame(tick);
     };
     const start = () => { if (!disposed && !frame && visible && !document.hidden) { last = performance.now(); frame = requestAnimationFrame(tick); } }; wake.current = start;
     const resize = () => { if (disposed) return; height = el.clientHeight; const width = Math.min(340, Math.max(190, el.clientWidth * .6)); cardH = width / 1.5925; el.style.setProperty("--cylinder-card-width", width + "px"); el.style.setProperty("--cylinder-card-height", cardH + "px"); start(); };

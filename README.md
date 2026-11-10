@@ -51,7 +51,7 @@ Original template HTML, LICENSE and historical credits are retained for provenan
 - Three full-height video categories use vertical titles, staggered reveals and hover zoom, with playback suspended offscreen.
 - The separate homepage name-preview section has been removed; live personalisation remains in the studio.
 - The compact gallery uses layered reveals, gentle organic frame movement and magnetic hover. Motion pauses offscreen.
-- The gift cylinder is a decorative autoplay display running at twice its previous speed with layered front/back cards. It has no drag, step or pause controls. Its slow automatic rotation continues under reduced-motion preferences as expressly requested; it pauses when offscreen or the tab is hidden.
+- The gift cylinder is a decorative autoplay display with a two-second hold and an 800ms transition for each card with layered front/back cards. It has no drag, step or pause controls. Its slow automatic rotation continues under reduced-motion preferences as expressly requested; it pauses when offscreen or the tab is hidden.
 - The FAQ remains. The invitation, boutique chapter, bridal process and closing slogan were removed from the homepage.
 - The footer links to collections, inspiration, the studio, saved briefs, current privacy/data information and the demonstration workspace. The privacy page explains this browser-only concept; it is not a final business privacy policy.
 

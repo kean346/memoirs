@@ -179,7 +179,7 @@ test("depth runway loops, synchronises products and opens the selected gown in t
   await expect(page.getByRole("combobox", { name: "Selected gown", exact: true })).toHaveValue("Aurelia — Romantic Lace");
 });
 
-test("gift showcase slowly advances without manual controls and opens the simple gift request", async ({ page }) => {
+test("gift showcase advances briskly after a short hold without manual controls and opens the simple gift request", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await page.locator("#keepsakes").scrollIntoViewIfNeeded();
@@ -190,7 +190,7 @@ test("gift showcase slowly advances without manual controls and opens the simple
   const first = await page.locator(".cylinder-card").first().getAttribute("style");
   await expect.poll(() => page.locator(".cylinder-card").first().getAttribute("style")).not.toBe(first);
   const product = await page.locator(".cylinder-index strong").textContent();
-  await expect.poll(() => page.locator(".cylinder-index strong").textContent(), { timeout: 9000 }).not.toBe(product);
+  await expect.poll(() => page.locator(".cylinder-index strong").textContent(), { timeout: 4000 }).not.toBe(product);
   await page.locator("#keepsakes").getByRole("link", { name: "Personalise a keepsake", exact: true }).click();
   await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toBeVisible();
 });
