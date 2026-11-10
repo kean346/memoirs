@@ -51,8 +51,10 @@ Original template HTML, LICENSE and historical credits are retained for provenan
 - Three full-height video categories use vertical titles, staggered reveals and hover zoom, with playback suspended offscreen.
 - A simple homepage keepsake preview carries the entered name and selected gift into the studio.
 - The compact gallery uses layered reveals, gentle organic frame movement and magnetic hover. Motion pauses offscreen.
-- The gift cylinder is a slow decorative autoplay display with layered front/back cards. It has no drag, step or pause controls. Reduced-motion preferences stop its automatic rotation.
+- The gift cylinder is a slow decorative autoplay display with layered front/back cards. It has no drag, step or pause controls. Its slow automatic rotation continues under reduced-motion preferences as expressly requested; it pauses when offscreen or the tab is hidden.
 - The FAQ remains. The invitation, boutique chapter, bridal process and closing slogan were removed from the homepage.
 - The footer links to collections, inspiration, the studio, saved briefs, current privacy/data information and the demonstration workspace. The privacy page explains this browser-only concept; it is not a final business privacy policy.
 
 The supplied examples were adapted as scoped React components and CSS, without adding Tailwind, WebGL or new runtime dependencies. Gift requests omit unrelated bridal-party fields. Bridal preferences and notes update beside the two-image preview. Existing detail routes, quotations and manager functionality are retained.
+
+The current proposed gift collection comprises a bridal morning set, bridesmaid proposal box, engraved champagne duo, pearl jewellery keepsake and monogrammed satin robe. New generated transparent product images support live lettering previews. The homepage inspiration edit uses distinct accessory, bridal-party and stationery scenes. These are proposed concepts, not business-confirmed stock. Category camera movement is halved from the previous loops.

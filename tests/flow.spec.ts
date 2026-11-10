@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { seed, initial } from "../src/lib/model";
 
 test("gift personalisation persists through enquiry, quotation PDF and confirmed order", async ({ page }) => {
   const errors: string[] = [];
@@ -8,7 +9,7 @@ test("gift personalisation persists through enquiry, quotation PDF and confirmed
   await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Load Example", exact: true }).click();
   await page.getByRole("button", { name: /Personalised Gift/ }).click();
-  await page.getByRole("combobox", { name: "Gift product", exact: true }).selectOption("Bridal robe");
+  await page.getByRole("combobox", { name: "Gift product", exact: true }).selectOption("Monogrammed satin robe");
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByLabel("Personalised name or text").fill("Sarah");
@@ -27,7 +28,7 @@ test("gift personalisation persists through enquiry, quotation PDF and confirmed
   await expect(page).toHaveURL(/enquiry\/success\/PM-ENQ/);
   await page.getByRole("link", { name: "View in Studio Manager" }).click();
   await expect(page.locator(".summary")).toContainText("Sarah");
-  await expect(page.locator(".summary")).toContainText("Bridal robe");
+  await expect(page.locator(".summary")).toContainText("Monogrammed satin robe");
   await page.getByRole("combobox", { name: "Enquiry status", exact: true }).selectOption("In review");
   await page.reload();
   await expect(page.getByRole("combobox", { name: "Enquiry status", exact: true })).toHaveValue("In review");
@@ -117,7 +118,7 @@ test("mobile routes, local assets, navigation and reduced motion remain accessib
 
 test("all five gift previews update and invalid quantity is blocked", async ({ page }) => {
   await page.goto("/studio?request=gift");
-  for (const product of ["Bridal robe", "Champagne flute", "Bridal slippers", "Gift box", "Personalised bridal hanger"]) {
+  for (const product of ["Monogrammed satin robe", "Engraved champagne duo", "Bridal morning gift set", "Bridesmaid proposal box", "Pearl jewellery keepsake"]) {
     await page.getByRole("combobox", { name: "Gift product", exact: true }).selectOption(product);
     await expect(page.getByRole("img", { name: new RegExp(product + ",") })).toBeVisible();
   }
@@ -141,10 +142,10 @@ test("desktop hero plays original 4K footage with pause and rotation controls", 
 });
 
 test("all generated product bases load and selected styling appears in the live preview", async ({ page }) => {
-  await page.goto("/studio?request=gift&product=Bridal%20slippers");
-  await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toHaveValue("Bridal slippers");
-  const paths = ["bridal-robe", "bridal-flute", "bridal-slippers", "bridal-gift-box", "bridal-hanger"];
-  const names = ["Bridal robe", "Champagne flute", "Bridal slippers", "Gift box", "Personalised bridal hanger"];
+  await page.goto("/studio?request=gift&product=Bridal%20morning%20gift%20set");
+  await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toHaveValue("Bridal morning gift set");
+  const paths = ["curated-satin-robe", "curated-champagne-duo", "curated-morning-set", "curated-proposal-box", "curated-jewellery"];
+  const names = ["Monogrammed satin robe", "Engraved champagne duo", "Bridal morning gift set", "Bridesmaid proposal box", "Pearl jewellery keepsake"];
   for (let i = 0; i < names.length; i++) {
     await page.getByRole("combobox", { name: "Gift product", exact: true }).selectOption(names[i]);
     await expect(page.locator(".gift-preview image")).toHaveAttribute("href", "/images/" + paths[i] + ".webp");
@@ -181,6 +182,7 @@ test("depth runway loops, synchronises products and opens the selected gown in t
 });
 
 test("gift showcase slowly advances without manual controls and opens the simple gift request", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await page.locator("#keepsakes").scrollIntoViewIfNeeded();
   await expect(page.locator(".cylinder-card")).toHaveCount(5);
@@ -250,12 +252,32 @@ test("home edits remove the named sections, gallery responds to hover and the fo
 test("homepage personalisation preview carries the name and selected gift into the studio", async ({ page }) => {
   await page.goto("/");
   await page.locator(".personalisation-editorial").scrollIntoViewIfNeeded();
-  await page.getByRole("group", { name: "Choose a preview keepsake" }).getByRole("button", { name: "Gift box", exact: true }).click();
+  await page.getByRole("group", { name: "Choose a preview keepsake" }).getByRole("button", { name: "Bridesmaid proposal box", exact: true }).click();
   await page.getByLabel("Try your name").fill("Amelia");
   await expect(page.locator(".teaser-product-sculpture text")).toHaveText("Amelia");
   await page.getByRole("link", { name: "Continue in the studio", exact: true }).click();
-  await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toHaveValue("Gift box");
+  await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toHaveValue("Bridesmaid proposal box");
   await expect(page.getByTestId("preview-name")).toHaveText("Amelia");
   await page.reload();
   await expect(page.getByTestId("preview-name")).toHaveText("Amelia");
+});
+
+
+test("legacy saved gifts keep their history while the new collection is available", async ({ page }) => {
+  const data = seed();
+  data.packages = [{ name: "Personalised bridal hanger", price: 0, enabled: true }];
+  data.enquiries[0].config.product = "Personalised bridal hanger";
+  await page.addInitScript(({ data, draft }) => {
+    localStorage.setItem("precious-memoirs-v1", JSON.stringify(data));
+    localStorage.setItem("precious-memoirs-v1-draft", JSON.stringify(draft));
+  }, { data, draft: { ...initial, product: "Personalised bridal hanger", message: "Amelia" } });
+  await page.goto("/studio?request=gift");
+  const products = page.getByRole("combobox", { name: "Gift product", exact: true });
+  await expect(products).toHaveValue("Bridal morning gift set");
+  await expect(products.locator("option")).toHaveCount(5);
+  await expect(products).not.toContainText("hanger");
+  await products.selectOption("Pearl jewellery keepsake");
+  await expect(page.getByTestId("preview-name")).toHaveText("Amelia");
+  const history = await page.evaluate(() => JSON.parse(localStorage.getItem("precious-memoirs-v1")!).enquiries[0].config.product);
+  expect(history).toBe("Personalised bridal hanger");
 });

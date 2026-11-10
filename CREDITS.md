@@ -99,3 +99,6 @@ The bridal runway adapts the supplied **Maison Vell — Runway Depth Lookbook** 
 `category-bridal.mp4`, `category-gifting.mp4` and `category-morning.mp4` are three original 12-second editorial motion loops made from newly AI-generated still scenes with seamless camera drift. They are not filmed footage or stock-video downloads. The matching WebP posters are generated imagery. See `public/videos/category-manifest.json` for dimensions, duration and hashes. Existing Pexels 4K hero videos are unchanged.
 
 `public/images/bridal-style-sheet.webp` is a generated six-panel fabric-and-colour moodboard for the six demonstration styles. It communicates styling inspiration, not confirmed stock or an altered gown photograph.
+
+## Curated concept refresh (November 2026)
+Eight AI-generated images: five proposed gift concepts (`curated-*.webp`) and three editorial inspiration scenes (`inspiration-*.webp`). Generated for this fictional demonstration, not photographs of Precious Memoirs stock. Category video camera displacement and zoom variation were reduced by 50%; source scenes are unchanged.

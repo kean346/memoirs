@@ -92,7 +92,7 @@
 .cylinder-card-top { display: flex; justify-content: space-between; font-size: 7px; letter-spacing: .16em; position: relative; z-index: 1; }
 .cylinder-front img { position: absolute; left: 36%; top: 10%; height: 82%; width: 50%; object-fit: contain; filter: drop-shadow(0 8px 6px #6e543c22); }
 .cylinder-card-bottom { position: absolute; left: 18px; right: 18px; bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
-.cylinder-card-bottom > span { max-width: 46%; font-family: var(--font-display); font-size: 24px; line-height: 1; }
+.cylinder-card-bottom > span { max-width: 55%; font-family: var(--font-display); font-size: 20px; line-height: 1; }
 .cylinder-card-bottom a { width: 26px; height: 26px; border: 1px solid #493a2c66; display: grid; place-items: center; border-radius: 50%; }
 .cylinder-back { transform: rotateX(180deg) translateZ(2px); background: #64464b; color: #f5e8d7; padding: 20px; display: flex; flex-direction: column; }
 .cylinder-back > span { font-size: 7px; letter-spacing: .2em; }

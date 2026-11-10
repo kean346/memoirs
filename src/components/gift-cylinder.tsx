@@ -4,12 +4,11 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { gifts } from "@/lib/catalogue";
 import { giftImages } from "./gift-preview";
-import { useInView, useReducedMotion, wrap } from "./showcase-hooks";
+import { useInView, wrap } from "./showcase-hooks";
 
 // The supplied cylinder's magnetic dwell, smoothstep, 1350px perspective and layered thickness.
 export default function GiftCylinder() {
   const { ref: root, visible } = useInView<HTMLElement>(.08);
-  const reduced = useReducedMotion();
   const scene = useRef<HTMLDivElement>(null), cards = useRef<(HTMLDivElement | null)[]>([]);
   const motion = useRef({ progress: 0, target: 0 });
   const wake = useRef<() => void>(() => {});
@@ -21,9 +20,9 @@ export default function GiftCylinder() {
     const state = motion.current, smooth = (v: number) => v * v * (3 - 2 * v);
     const tick = (now: number) => {
       frame = 0; if (disposed) return; const dt = Math.min(50, now - last) || 16; last = now;
-      const automatic = !reduced;
+      const automatic = true;
       if (automatic) state.target += dt * .000065;
-      state.progress = reduced ? state.target : state.progress + (state.target - state.progress) * (1 - Math.exp(-dt * .009));
+      state.progress = state.progress + (state.target - state.progress) * (1 - Math.exp(-dt * .009));
       const rounded = Math.round(state.progress), diff = state.progress - rounded;
       const virtual = rounded + Math.sign(diff) * Math.pow(Math.abs(diff) * 2, 2.2) / 2;
       cards.current.forEach((card, i) => {
@@ -45,7 +44,7 @@ export default function GiftCylinder() {
     const observer = new ResizeObserver(resize); observer.observe(el);
     document.addEventListener("visibilitychange", start); resize();
     return () => { disposed = true; cancelAnimationFrame(frame); observer.disconnect(); document.removeEventListener("visibilitychange", start); wake.current = () => {}; };
-  }, [visible, reduced]);
+  }, [visible]);
   return <section ref={root} className="gift-cylinder-section" id="keepsakes" aria-label="Three dimensional rotating keepsake cards">
     <div className="cylinder-editorial"><p className="eyebrow">OBJECTS OF AFFECTION / THE PERSONAL EDIT</p><h2>Small things.<br /><em>Extraordinary<br />meaning.</em></h2><p>A satin morning. A first toast. A name stitched into a memory. Little things with a personal meaning, gently coming into view.</p><Link className="cylinder-cta" href="/studio?request=gift">Personalise a keepsake <ArrowUpRight size={17} /></Link><div className="cylinder-index" aria-live="off"><span>0{active + 1} / 05</span><strong>{gifts[active]}</strong></div><p className="cylinder-note">Generated demonstration products · Price on request</p></div>
     <div ref={scene} className="cylinder-scene cylinder-autoplay" aria-hidden="true">

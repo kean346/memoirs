@@ -2,31 +2,34 @@
   {
     "file": "category-bridal.mp4",
     "poster": "category-bridal.webp",
-    "duration": 12.0,
+    "duration": 12,
     "width": 720,
     "height": 1280,
     "fps": 24,
     "source": "AI-generated editorial image with a seamless slow camera-motion treatment; not filmed stock footage.",
-    "sha256": "b307e453ba7a1d617b76941931a064b7a4c5155cd79140b6f423b5ed85da47f7"
+    "sha256": "13a70e3fd5cdbb5a6de79c95958384b130cff6454bfdef7a12599080bc99c1fa",
+    "motion_amplitude_scale": 0.5
   },
   {
     "file": "category-gifting.mp4",
     "poster": "category-gifting.webp",
-    "duration": 12.0,
+    "duration": 12,
     "width": 720,
     "height": 1280,
     "fps": 24,
     "source": "AI-generated editorial image with a seamless slow camera-motion treatment; not filmed stock footage.",
-    "sha256": "e0f756831807bbe017e6673542deed4537e4910bd9a284f8d0c2263274f4a1be"
+    "sha256": "1bd4f7bef4560feb9afe9a993fbdbf363a5a8181dcdb488215a6cc70d0ad4277",
+    "motion_amplitude_scale": 0.5
   },
   {
     "file": "category-morning.mp4",
     "poster": "category-morning.webp",
-    "duration": 12.0,
+    "duration": 12,
     "width": 720,
     "height": 1280,
     "fps": 24,
     "source": "AI-generated editorial image with a seamless slow camera-motion treatment; not filmed stock footage.",
-    "sha256": "1d4fbead2fc431dd8f9bd756e0607c370478d88b5bd13f1d761a029c809cf1dd"
+    "sha256": "b32315e9c4e6bc6b19c959f2f21c49289b459309fd1e1f8c34d88287aa7d7e7a",
+    "motion_amplitude_scale": 0.5
   }
 ]

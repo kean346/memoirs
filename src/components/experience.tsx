@@ -55,7 +55,7 @@ import {
   gifts,
 } from "@/lib/catalogue";
 const KEY = "precious-memoirs-v1";
-const image = (i: number) => i % 6 === 5 ? "/images/bridal-robe.webp" : "/images/gown-" + (i % 5) + ".webp";
+const image = (i: number) => i >= 6 ? ["/images/inspiration-accessories.webp", "/images/inspiration-party.webp", "/images/inspiration-stationery.webp"][i - 6] : i % 6 === 5 ? "/images/bridal-robe.webp" : "/images/gown-" + (i % 5) + ".webp";
 const categories = gowns;
 const slugs = ["seraphina", "aurelia", "celeste", "vivienne", "elara"];
 const descriptions = [
@@ -67,6 +67,11 @@ const descriptions = [
 ];
 const occasionDescriptions = ["Explore a fictional gown and request a bridal consultation.", "Create a personalised bridal gift and request a quotation."];
 const collectionImage = (i: number) => "/images/gown-" + i + ".webp";
+// Extend the demo catalogue without rewriting historical enquiries or quotations.
+function currentGiftCatalogue(data: Data): Data {
+  gifts.forEach(name => { if (!data.packages.some(p => p.name === name)) data.packages.push({ name, price: 0, enabled: true }); });
+  return data;
+}
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="field">
@@ -122,10 +127,11 @@ export default function Experience() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
-      setData(raw ? JSON.parse(raw) : seed());
+      setData(currentGiftCatalogue(raw ? JSON.parse(raw) : seed()));
       const draft = localStorage.getItem(KEY + "-draft");
       const saved = draft ? { ...initial, ...JSON.parse(draft) } : { ...initial };
       if (new URLSearchParams(window.location.search).get("request") === "gift") saved.occasion = "Personalised Gift";
+      if (!gifts.includes(saved.product)) saved.product = initial.product;
       setConfig(saved);
     } catch {
       setData(seed());
@@ -136,7 +142,7 @@ export default function Experience() {
     const sync = (e: StorageEvent) => {
       if (e.key === KEY && e.newValue) {
         try {
-          setData(JSON.parse(e.newValue));
+          setData(currentGiftCatalogue(JSON.parse(e.newValue)));
         } catch {
           setNotice("Unable to read another tab's changes.");
         }
@@ -165,7 +171,7 @@ export default function Experience() {
     if (!data) return false;
     try {
       const stored = localStorage.getItem(KEY);
-      const next: Data = structuredClone(stored ? JSON.parse(stored) : data);
+      const next: Data = currentGiftCatalogue(structuredClone(stored ? JSON.parse(stored) : data));
       fn(next);
       next.revision++;
       next.activity.unshift({
@@ -466,7 +472,7 @@ function Home({ configure }: { configure: (c: Partial<Config>) => void }) {
       <section className="section bridal-faq" id="questions">
         <div><p className="eyebrow">BEFORE YOUR NEXT CHAPTER</p><h2 className="reveal">A few<br /><em>thoughtful answers.</em></h2></div>
         <div>{[
-          ["Can I personalise a gift?", "Yes. Choose a robe, champagne flute, slippers, gift box or bridal hanger. Your lettering, product colour and decorative details appear in the studio preview."],
+          ["Can I personalise a gift?", "Yes. Explore a bridal morning set, bridesmaid proposal box, champagne duo, pearl jewellery keepsake or monogrammed robe. Your lettering, product colour and decorative details appear in the studio preview."],
           ["Are these gowns available to buy?", "The gowns and product imagery are generated demonstration concepts. Confirm real stock, sizing and materials with Precious Memoirs before making plans."],
           ["How do I request a consultation?", "Select a gown and share your wedding date and preferences in the studio. This demonstration saves the request in this browser; it does not send an email or reserve a fitting."],
           ["Can I save my design?", "Your draft saves in this browser as you make changes. Completed demo requests appear in Studio Manager, with their personalisation details retained."],
@@ -563,10 +569,13 @@ function Gallery({ compact = false }: { compact?: boolean }) {
     "A statement to remember",
     "Softness in every fold",
     "A keepsake, made yours",
+    "The finishing touches",
+    "For your bridal party",
+    "An invitation to remember",
   ];
-  const indices = (compact ? [0, 1, 2] : [0, 1, 2, 3, 4, 5]).filter(
+  const indices = (compact ? [6, 7, 8] : [0, 1, 2, 3, 4, 5, 6, 7, 8]).filter(
     (i) =>
-      filter === "All" || (filter === "Gowns" ? i < 5 : i === 5),
+      filter === "All" || (filter === "Gowns" ? i < 5 : i >= 5),
   );
   return (
     <>
@@ -609,8 +618,8 @@ function Gallery({ compact = false }: { compact?: boolean }) {
             AI-generated editorial inspiration. This fictional design is not confirmed Precious Memoirs inventory.
           </p>
           <div className="actions">
-            <button onClick={() => setOpen((open + 5) % 6)}>← Previous</button>
-            <button onClick={() => setOpen((open + 1) % 6)}>Next →</button>
+            <button onClick={() => setOpen((open + 8) % 9)}>← Previous</button>
+            <button onClick={() => setOpen((open + 1) % 9)}>Next →</button>
             <Link
               className="button"
               href="/studio"

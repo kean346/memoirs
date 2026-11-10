@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { gifts } from "./catalogue";
 export const occasions = ["Bridal Consultation", "Personalised Gift"];
 export const styles = ["Ivory Elegance", "Blush Romance", "Champagne Grace", "Dusty Rose", "Burgundy Detail", "Timeless Minimal"];
 export const money = (c: number) => c === 0 ? "On request" : new Intl.NumberFormat("en-BW", { style: "currency", currency: "BWP", maximumFractionDigits: 2 }).format(c / 100);
@@ -34,7 +35,7 @@ export type Config = {
 export const initial: Config = {
   occasion: occasions[0],
   gown: "Seraphina — Classic Satin",
-  product: "Bridal robe",
+  product: "Bridal morning gift set",
   lettering: "Playfair Display",
   textColour: "#713F4A",
   productColour: "#FAF5F0",
@@ -68,7 +69,7 @@ export const example: Config = {
 };
 export const defaults: Package[] = [
   ...occasions.map(name => ({ name, price: 0, enabled: true })),
-  ...["Bridal robe", "Champagne flute", "Bridal slippers", "Gift box", "Personalised bridal hanger"].map(name => ({ name, price: 0, enabled: true })),
+  ...gifts.map(name => ({ name, price: 0, enabled: true })),
 ];
 export function estimate(c: Config, p: Package[]): Item[] {
   const gift = c.occasion === "Personalised Gift";
@@ -85,7 +86,7 @@ export function totals(items: Item[], charge = 0, discount = 0, tax = 0) {
 export const configSchema = z.object({
   occasion: z.enum(["Bridal Consultation", "Personalised Gift"]),
   gown: z.enum(["Seraphina — Classic Satin", "Aurelia — Romantic Lace", "Celeste — Modern Minimalist", "Vivienne — Statement Bridal", "Elara — Soft Elegance"]),
-  product: z.enum(["Bridal robe", "Champagne flute", "Bridal slippers", "Gift box", "Personalised bridal hanger"]),
+  product: z.enum(gifts),
   message: z.string().max(40),
   lettering: z.enum(["Playfair Display", "Montserrat", "Cursive"]),
   motif: z.enum(["None", "Heart", "Botanical"]),

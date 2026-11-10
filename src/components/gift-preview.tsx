@@ -2,11 +2,24 @@ import type { CSSProperties } from "react";
 import type { Config } from "@/lib/model";
 
 export const giftImages: Record<string, string> = {
+  "Bridal morning gift set": "/images/curated-morning-set.webp",
+  "Bridesmaid proposal box": "/images/curated-proposal-box.webp",
+  "Engraved champagne duo": "/images/curated-champagne-duo.webp",
+  "Pearl jewellery keepsake": "/images/curated-jewellery.webp",
+  "Monogrammed satin robe": "/images/curated-satin-robe.webp",
+  // Retained for historical browser-demo records; not selectable in the new collection.
   "Bridal robe": "/images/bridal-robe.webp",
   "Champagne flute": "/images/bridal-flute.webp",
   "Bridal slippers": "/images/bridal-slippers.webp",
   "Gift box": "/images/bridal-gift-box.webp",
   "Personalised bridal hanger": "/images/bridal-hanger.webp",
+};
+export const giftPlacement: Record<string, { x: number; y: number; secondX?: number; max: number }> = {
+  "Bridal morning gift set": { x: 200, y: 200, max: 130 },
+  "Bridesmaid proposal box": { x: 200, y: 350, max: 150 },
+  "Engraved champagne duo": { x: 140, y: 160, secondX: 260, max: 75 },
+  "Pearl jewellery keepsake": { x: 200, y: 280, max: 140 },
+  "Monogrammed satin robe": { x: 245, y: 95, max: 65 },
 };
 const atmospheres = [
   { background: "#f5eee6", accent: "#a48162", decoration: "❧" },
@@ -23,9 +36,12 @@ export default function GiftPreview({ config: c }: { config: Config }) {
   const theme = atmospheres[Math.max(0, styleNames.indexOf(c.style))];
   const fontFamily = c.lettering === "Montserrat" ? "var(--font-sans)" : c.lettering === "Cursive" ? "cursive" : "var(--font-display)";
   const label = c.message || "Your name";
-  const slippers = c.product === "Bridal slippers";
-  const y = c.product === "Bridal robe" ? 105 : c.product === "Champagne flute" ? 170 : c.product === "Gift box" ? 275 : c.product === "Personalised bridal hanger" ? 235 : 165;
-  const maxText = slippers ? 68 : c.product === "Bridal robe" ? 130 : 160;
+  const placement = giftPlacement[c.product] || { x: 200, y: 280, max: 140 };
+  const paired = placement.secondX !== undefined;
+  const y = placement.y;
+  const maxText = placement.max;
+  const nameSize = paired ? 14 : label.length > 20 ? 14 : 20;
+  const fittedLength = label.length * nameSize * .55 > maxText ? maxText : undefined;
   const lettering = { fontFamily, fontStyle: c.lettering === "Cursive" ? "italic" : undefined } as CSSProperties;
   return <div className="gift-preview" data-style={c.style} style={{ "--preview-background": theme.background, "--preview-accent": theme.accent } as CSSProperties} aria-label="Live personalised gift preview">
     <div className="preview-heading"><p className="eyebrow">THE PERSONALISATION ATELIER</p><span className="preview-live"><i /> LIVE PREVIEW</span></div>
@@ -34,10 +50,10 @@ export default function GiftPreview({ config: c }: { config: Config }) {
       <defs><filter id="product-tint" colorInterpolationFilters="sRGB"><feFlood floodColor={c.productColour} result="colour"/><feComposite in="colour" in2="SourceGraphic" operator="in" result="tint"/><feBlend in="SourceGraphic" in2="tint" mode="multiply"/></filter></defs>
       <image href={giftImages[c.product]} x="35" y="0" width="330" height="460" filter="url(#product-tint)" />
       <g fill={c.textColour} style={lettering}>
-        <text data-testid="preview-name" x={slippers ? 125 : 200} y={y} textAnchor="middle" fontSize={slippers ? 14 : label.length > 20 ? 14 : 20} textLength={label.length > (slippers ? 9 : 16) ? maxText : undefined} lengthAdjust="spacingAndGlyphs">{label}</text>
-        {slippers && <text x="275" y={y} textAnchor="middle" fontSize="14" textLength={label.length > 9 ? maxText : undefined} lengthAdjust="spacingAndGlyphs">{label}</text>}
-        {c.motif !== "None" && <text x={slippers ? 125 : 200} y={y + 24} textAnchor="middle" className="preview-motif" fontSize="18">{c.motif === "Heart" ? "♡" : "❧"}</text>}
-        {slippers && c.motif !== "None" && <text x="275" y={y + 24} textAnchor="middle" className="preview-motif" fontSize="18">{c.motif === "Heart" ? "♡" : "❧"}</text>}
+        <text data-testid="preview-name" x={placement.x} y={y} textAnchor="middle" fontSize={nameSize} textLength={fittedLength} lengthAdjust="spacingAndGlyphs">{label}</text>
+        {paired && <text x={placement.secondX} y={y} textAnchor="middle" fontSize="14" textLength={fittedLength} lengthAdjust="spacingAndGlyphs">{label}</text>}
+        {c.motif !== "None" && <text x={placement.x} y={y + 24} textAnchor="middle" className="preview-motif" fontSize="18">{c.motif === "Heart" ? "♡" : "❧"}</text>}
+        {paired && c.motif !== "None" && <text x={placement.secondX} y={y + 24} textAnchor="middle" className="preview-motif" fontSize="18">{c.motif === "Heart" ? "♡" : "❧"}</text>}
       </g>
     </svg>
     <div className="preview-product"><h2>{c.product}</h2><span>× {c.quantity}</span></div>

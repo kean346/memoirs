@@ -26,13 +26,13 @@ test("bridal enquiry retains gown, relationships and idempotent quotation/order"
 });
 test("personalisation and quantity survive snapshot, quotation and serialisation", () => {
   const d = seed();
-  const gift = { ...example, occasion: "Personalised Gift", product: "Champagne flute", message: "Sarah", lettering: "Montserrat", textColour: "#A96770", productColour: "#E8C9C5", motif: "Heart", quantity: 4 };
+  const gift = { ...example, occasion: "Personalised Gift", product: "Engraved champagne duo", message: "Sarah", lettering: "Montserrat", textColour: "#A96770", productColour: "#E8C9C5", motif: "Heart", quantity: 4 };
   const id = submit(d, gift);
   gift.message = "Changed";
   const e = d.enquiries.find(e => e.id === id)!;
   assert.equal(e.config.message, "Sarah");
   assert.equal(e.items[0].qty, 4);
-  assert.equal(e.items[0].name, "Champagne flute");
+  assert.equal(e.items[0].name, "Engraved champagne duo");
   const qid = createQuote(d, id);
   assert.equal(d.quotes.find(q => q.id === qid)!.items[0].qty, 4);
   const saved = JSON.parse(JSON.stringify(e));
