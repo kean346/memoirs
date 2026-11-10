@@ -35,7 +35,7 @@ Routes remain `/collections`, `/collections/seraphina` (and the other four names
 
 ## Assets and remaining work
 
-The separate hero uses the three credited Pexels 3840×2160 wedding videos in `public/videos/manifest.json`. It requests muted, looping 4K playback on all viewport sizes, pauses offscreen, and has pause/resume controls. CSS movement respects reduced motion. The original video packets were preserved in progressive fast-start MP4 containers.
+The separate hero uses the three credited Pexels 3840×2160 wedding videos in `public/videos/manifest.json`. It requests muted, looping 4K playback on all viewport sizes, pauses offscreen, with no on-screen playback controls. CSS movement respects reduced motion. The original video packets were preserved in progressive fast-start MP4 containers.
 
 The three category panels use new AI-image-based editorial motion clips: bridal detail, gifting and a getting-ready scene. They are 12-second 720×1280 camera-motion loops, not newly filmed stock footage. Their details are recorded in `public/videos/category-manifest.json`. Generated WebP product images, runway cutouts and a six-panel styling moodboard are hosted locally.
 
@@ -49,12 +49,14 @@ Original template HTML, LICENSE and historical credits are retained for provenan
 
 - The collection index and homepage bridal edit use a depth runway adapted from the supplied Maison Vell reference. Drag, arrow controls, keyboard navigation or focused scrolling move a single progress value that drives the depth, numbering and paired-product rail. Ordinary page scrolling remains available; the rail moves below the runway on phones.
 - Three full-height video categories use vertical titles, staggered reveals and hover zoom, with playback suspended offscreen.
-- A simple homepage keepsake preview carries the entered name and selected gift into the studio.
+- The separate homepage name-preview section has been removed; live personalisation remains in the studio.
 - The compact gallery uses layered reveals, gentle organic frame movement and magnetic hover. Motion pauses offscreen.
-- The gift cylinder is a slow decorative autoplay display with layered front/back cards. It has no drag, step or pause controls. Its slow automatic rotation continues under reduced-motion preferences as expressly requested; it pauses when offscreen or the tab is hidden.
+- The gift cylinder is a decorative autoplay display running at twice its previous speed with layered front/back cards. It has no drag, step or pause controls. Its slow automatic rotation continues under reduced-motion preferences as expressly requested; it pauses when offscreen or the tab is hidden.
 - The FAQ remains. The invitation, boutique chapter, bridal process and closing slogan were removed from the homepage.
 - The footer links to collections, inspiration, the studio, saved briefs, current privacy/data information and the demonstration workspace. The privacy page explains this browser-only concept; it is not a final business privacy policy.
 
 The supplied examples were adapted as scoped React components and CSS, without adding Tailwind, WebGL or new runtime dependencies. Gift requests omit unrelated bridal-party fields. Bridal preferences and notes update beside the two-image preview. Existing detail routes, quotations and manager functionality are retained.
 
-The current proposed gift collection comprises a bridal morning set, bridesmaid proposal box, engraved champagne duo, pearl jewellery keepsake and monogrammed satin robe. New generated transparent product images support live lettering previews. The homepage inspiration edit uses distinct accessory, bridal-party and stationery scenes. These are proposed concepts, not business-confirmed stock. Category camera movement is halved from the previous loops.
+The current proposed gift collection comprises a bridal morning set, bridesmaid proposal box, engraved champagne duo, pearl jewellery keepsake and satin bridal robe. New generated transparent product images support live lettering previews. The homepage inspiration edit uses distinct accessory, bridal-party and stationery scenes. These are proposed concepts, not business-confirmed stock. Category camera movement is halved from the previous loops.
+
+The satin bridal robe has no name/motif overlay or lettering controls; colour and quantity remain selectable. The hero films autoplay muted and loop with no play/pause button.

@@ -46,7 +46,6 @@ import VideoHero from "./video-hero";
 import RunwayLookbook from "./runway-lookbook";
 import GiftCylinder from "./gift-cylinder";
 import VideoCategories from "./video-categories";
-import PersonalisationTeaser from "./personalisation-teaser";
 import StyleReference, { styleBackgroundPosition } from "./style-reference";
 import { useInView } from "./showcase-hooks";
 import GiftPreview, { giftImages } from "./gift-preview";
@@ -131,6 +130,7 @@ export default function Experience() {
       const draft = localStorage.getItem(KEY + "-draft");
       const saved = draft ? { ...initial, ...JSON.parse(draft) } : { ...initial };
       if (new URLSearchParams(window.location.search).get("request") === "gift") saved.occasion = "Personalised Gift";
+      if (saved.product === "Monogrammed satin robe") { saved.product = "Satin bridal robe"; saved.message = ""; saved.motif = "None"; }
       if (!gifts.includes(saved.product)) saved.product = initial.product;
       setConfig(saved);
     } catch {
@@ -160,6 +160,7 @@ export default function Experience() {
   }, [path, searchParams]);
   const updateConfig = (patch: Partial<Config>) => {
     const next = { ...config, ...patch };
+    if (next.occasion === "Personalised Gift" && next.product === "Satin bridal robe") { next.message = ""; next.motif = "None"; }
     setConfig(next);
     try {
       localStorage.setItem(KEY + "-draft", JSON.stringify(next));
@@ -453,7 +454,6 @@ function Home({ configure }: { configure: (c: Partial<Config>) => void }) {
       <VideoHero />
       <RunwayLookbook select={gown => configure({ occasion: "Bridal Consultation", gown, officialPackage: gown })} />
       <VideoCategories />
-      <PersonalisationTeaser configure={configure} />
       <section className="section inspiration-section">
         <div className="section-heading">
           <div>
@@ -472,7 +472,7 @@ function Home({ configure }: { configure: (c: Partial<Config>) => void }) {
       <section className="section bridal-faq" id="questions">
         <div><p className="eyebrow">BEFORE YOUR NEXT CHAPTER</p><h2 className="reveal">A few<br /><em>thoughtful answers.</em></h2></div>
         <div>{[
-          ["Can I personalise a gift?", "Yes. Explore a bridal morning set, bridesmaid proposal box, champagne duo, pearl jewellery keepsake or monogrammed robe. Your lettering, product colour and decorative details appear in the studio preview."],
+          ["Can I personalise a gift?", "Yes. Explore a bridal morning set, bridesmaid proposal box, champagne duo, pearl jewellery keepsake or satin bridal robe. Your lettering, product colour and decorative details appear in the studio preview."],
           ["Are these gowns available to buy?", "The gowns and product imagery are generated demonstration concepts. Confirm real stock, sizing and materials with Precious Memoirs before making plans."],
           ["How do I request a consultation?", "Select a gown and share your wedding date and preferences in the studio. This demonstration saves the request in this browser; it does not send an email or reserve a fitting."],
           ["Can I save my design?", "Your draft saves in this browser as you make changes. Completed demo requests appear in Studio Manager, with their personalisation details retained."],
@@ -851,16 +851,17 @@ function Studio({
             )}
             {step === 2 && (
               c.occasion === "Personalised Gift" ? <>
+                {c.product !== "Satin bridal robe" && <>
                 <Field label="Personalised name or text"><input maxLength={40} value={c.message} onChange={e => update({ message: e.target.value })} /></Field>
                 <Field label="Font style"><select value={c.lettering} onChange={e => update({ lettering: e.target.value })}>{["Playfair Display", "Montserrat", "Cursive"].map(font => <option key={font}>{font}</option>)}</select></Field>
-                <div className="form-grid">
                   <Field label="Text colour"><input type="color" value={c.textColour} onChange={e => update({ textColour: e.target.value })} /></Field>
-                  <Field label="Product colour"><input type="color" value={c.productColour} onChange={e => update({ productColour: e.target.value })} /></Field>
-                </div>
                 <Field label="Decorative motif"><select value={c.motif} onChange={e => update({ motif: e.target.value })}>{["None", "Heart", "Botanical"].map(m => <option key={m}>{m}</option>)}</select></Field>
+                </>}
+                  <Field label="Product colour"><input type="color" value={c.productColour} onChange={e => update({ productColour: e.target.value })} /></Field>
+
                 <Field label="Quantity"><input id="quantity" aria-invalid={!!errors.quantity} aria-describedby={errors.quantity ? "quantity-error" : undefined} type="number" min={1} max={500} value={c.quantity} onChange={e => update({ quantity: Number(e.target.value) })} /></Field>
                 {errors.quantity && <p id="quantity-error" className="error">{errors.quantity}</p>}
-                <p className="note">Your preview updates as you type. Placement, finish and materials require confirmation.</p>
+                <p className="note">Colour and selected details update in the preview. Finish and materials require confirmation.</p>
               </> : <>
                 <p>Your selected gown: <strong>{c.gown}</strong>. Share sizing, fitting or accessory preferences with your bridal consultant.</p>
                 <Field label="Bridal consultation preferences"><textarea value={c.message} maxLength={40} onChange={e => update({ message: e.target.value })} /></Field>
@@ -1031,7 +1032,7 @@ function Summary({ c }: { c: Config }) {
         ["Request type", c.occasion],
         ...(c.occasion === "Bridal Consultation" ? [["Selected gown", c.gown]] : [["Gift product", c.product], ["Quantity", String(c.quantity)]]),
         ["Style", c.style],
-        ...(c.occasion === "Personalised Gift" ? [["Font", c.lettering], ["Text colour", c.textColour], ["Product colour", c.productColour], ["Decorative motif", c.motif]] : []),
+        ...(c.occasion === "Personalised Gift" ? [["Product colour", c.productColour], ...(c.product === "Satin bridal robe" ? [] : [["Font", c.lettering], ["Text colour", c.textColour], ["Decorative motif", c.motif]])] : []),
         [c.occasion === "Bridal Consultation" ? "Wedding date & time" : "Required date & time", c.date + " · " + c.time],
         ["Location", c.location],
         ...(c.occasion === "Bridal Consultation" ? [["Bridal party / venue", c.guests + " / " + c.venue], ["Budget", c.budget]] : []),

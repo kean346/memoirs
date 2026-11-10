@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, ArrowDown, Pause, Play } from "lucide-react";
+import { ArrowUpRight, ArrowDown } from "lucide-react";
 const scenes = [
   {
     title: "Romance in motion",
@@ -33,14 +33,13 @@ export default function VideoHero() {
   const root = useRef<HTMLElement>(null),
     videos = useRef<(HTMLVideoElement | null)[]>([]);
   const [active, setActive] = useState(0),
-    [paused, setPaused] = useState(false),
     [visible, setVisible] = useState(true),
     [inView, setInView] = useState(true),
     [playing, setPlaying] = useState(false),
     [failed, setFailed] = useState<number[]>([]),
     [motionReady, setMotionReady] = useState(false);
   const running =
-    motionReady && !paused && visible && inView;
+    motionReady && visible && inView;
   useEffect(() => {
     setMotionReady(true);
     const visibility = () => setVisible(!document.hidden);
@@ -207,32 +206,14 @@ export default function VideoHero() {
             DISCOVER THE POSSIBILITIES <ArrowDown size={14} />
           </a>
           <span key={active}>{scenes[active].mood}</span>
-          <button
-            className="cinema-pause"
-            aria-label={
-              paused
-                ? "Play background videos"
-                : "Pause background videos"
-            }
-            aria-pressed={paused}
-            onClick={() => setPaused(!paused)}
-          >
-            {paused ? (
-              <Play size={13} />
-            ) : (
-              <Pause size={13} />
-            )}
-            <span>
-              {paused ? "RESUME FILM" : "PAUSE FILM"}
-            </span>
-          </button>
+
         </div>
         {failed.length === 3 && (
           <span className="cinema-fallback-note">
             Visual inspiration · Explore your experience below
           </span>
         )}
-        {!playing && !paused && (
+        {!playing && (
           <span className="sr-only">
             The film is loading. You can explore the studio while it loads.
           </span>

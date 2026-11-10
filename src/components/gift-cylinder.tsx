@@ -21,7 +21,7 @@ export default function GiftCylinder() {
     const tick = (now: number) => {
       frame = 0; if (disposed) return; const dt = Math.min(50, now - last) || 16; last = now;
       const automatic = true;
-      if (automatic) state.target += dt * .000065;
+      if (automatic) state.target += dt * .00013;
       state.progress = state.progress + (state.target - state.progress) * (1 - Math.exp(-dt * .009));
       const rounded = Math.round(state.progress), diff = state.progress - rounded;
       const virtual = rounded + Math.sign(diff) * Math.pow(Math.abs(diff) * 2, 2.2) / 2;

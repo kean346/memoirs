@@ -6,6 +6,7 @@ export const giftImages: Record<string, string> = {
   "Bridesmaid proposal box": "/images/curated-proposal-box.webp",
   "Engraved champagne duo": "/images/curated-champagne-duo.webp",
   "Pearl jewellery keepsake": "/images/curated-jewellery.webp",
+  "Satin bridal robe": "/images/curated-satin-robe.webp",
   "Monogrammed satin robe": "/images/curated-satin-robe.webp",
   // Retained for historical browser-demo records; not selectable in the new collection.
   "Bridal robe": "/images/bridal-robe.webp",
@@ -19,7 +20,7 @@ export const giftPlacement: Record<string, { x: number; y: number; secondX?: num
   "Bridesmaid proposal box": { x: 200, y: 350, max: 150 },
   "Engraved champagne duo": { x: 140, y: 160, secondX: 260, max: 75 },
   "Pearl jewellery keepsake": { x: 200, y: 280, max: 140 },
-  "Monogrammed satin robe": { x: 245, y: 95, max: 65 },
+  "Satin bridal robe": { x: 245, y: 95, max: 65 },
 };
 const atmospheres = [
   { background: "#f5eee6", accent: "#a48162", decoration: "❧" },
@@ -35,7 +36,8 @@ const styleNames = ["Ivory Elegance", "Blush Romance", "Champagne Grace", "Dusty
 export default function GiftPreview({ config: c }: { config: Config }) {
   const theme = atmospheres[Math.max(0, styleNames.indexOf(c.style))];
   const fontFamily = c.lettering === "Montserrat" ? "var(--font-sans)" : c.lettering === "Cursive" ? "cursive" : "var(--font-display)";
-  const label = c.message || "Your name";
+  const plainRobe = c.product === "Satin bridal robe" || c.product === "Monogrammed satin robe";
+  const label = plainRobe ? "" : c.message || "Your name";
   const placement = giftPlacement[c.product] || { x: 200, y: 280, max: 140 };
   const paired = placement.secondX !== undefined;
   const y = placement.y;
@@ -49,15 +51,15 @@ export default function GiftPreview({ config: c }: { config: Config }) {
     <svg viewBox="0 0 400 460" role="img" aria-label={`${c.product}, ${label}, ${c.lettering}, ${c.motif} motif`}>
       <defs><filter id="product-tint" colorInterpolationFilters="sRGB"><feFlood floodColor={c.productColour} result="colour"/><feComposite in="colour" in2="SourceGraphic" operator="in" result="tint"/><feBlend in="SourceGraphic" in2="tint" mode="multiply"/></filter></defs>
       <image href={giftImages[c.product]} x="35" y="0" width="330" height="460" filter="url(#product-tint)" />
-      <g fill={c.textColour} style={lettering}>
+      {!plainRobe && <g fill={c.textColour} style={lettering}>
         <text data-testid="preview-name" x={placement.x} y={y} textAnchor="middle" fontSize={nameSize} textLength={fittedLength} lengthAdjust="spacingAndGlyphs">{label}</text>
         {paired && <text x={placement.secondX} y={y} textAnchor="middle" fontSize="14" textLength={fittedLength} lengthAdjust="spacingAndGlyphs">{label}</text>}
         {c.motif !== "None" && <text x={placement.x} y={y + 24} textAnchor="middle" className="preview-motif" fontSize="18">{c.motif === "Heart" ? "♡" : "❧"}</text>}
         {paired && c.motif !== "None" && <text x={placement.secondX} y={y + 24} textAnchor="middle" className="preview-motif" fontSize="18">{c.motif === "Heart" ? "♡" : "❧"}</text>}
-      </g>
+      </g>}
     </svg>
     <div className="preview-product"><h2>{c.product}</h2><span>× {c.quantity}</span></div>
-    <div className="preview-specs"><span style={{ color: c.textColour }}>Aa · {c.lettering}</span><span><i style={{ background: c.productColour }} /> Product colour</span><span>{c.motif === "None" ? "No motif" : c.motif + " motif"}</span></div>
-    <p className="preview-caption">Fictional product · Your lettering, colour and details update here</p>
+    <div className="preview-specs">{!plainRobe && <span style={{ color: c.textColour }}>Aa · {c.lettering}</span>}<span><i style={{ background: c.productColour }} /> Product colour</span>{!plainRobe && <span>{c.motif === "None" ? "No motif" : c.motif + " motif"}</span>}</div>
+    <p className="preview-caption">Fictional product · Colour and selected details update here</p>
   </div>;
 }

@@ -9,7 +9,7 @@ test("gift personalisation persists through enquiry, quotation PDF and confirmed
   await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Load Example", exact: true }).click();
   await page.getByRole("button", { name: /Personalised Gift/ }).click();
-  await page.getByRole("combobox", { name: "Gift product", exact: true }).selectOption("Monogrammed satin robe");
+  await page.getByRole("combobox", { name: "Gift product", exact: true }).selectOption("Bridesmaid proposal box");
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByLabel("Personalised name or text").fill("Sarah");
@@ -28,7 +28,7 @@ test("gift personalisation persists through enquiry, quotation PDF and confirmed
   await expect(page).toHaveURL(/enquiry\/success\/PM-ENQ/);
   await page.getByRole("link", { name: "View in Studio Manager" }).click();
   await expect(page.locator(".summary")).toContainText("Sarah");
-  await expect(page.locator(".summary")).toContainText("Monogrammed satin robe");
+  await expect(page.locator(".summary")).toContainText("Bridesmaid proposal box");
   await page.getByRole("combobox", { name: "Enquiry status", exact: true }).selectOption("In review");
   await page.reload();
   await expect(page.getByRole("combobox", { name: "Enquiry status", exact: true })).toHaveValue("In review");
@@ -118,9 +118,9 @@ test("mobile routes, local assets, navigation and reduced motion remain accessib
 
 test("all five gift previews update and invalid quantity is blocked", async ({ page }) => {
   await page.goto("/studio?request=gift");
-  for (const product of ["Monogrammed satin robe", "Engraved champagne duo", "Bridal morning gift set", "Bridesmaid proposal box", "Pearl jewellery keepsake"]) {
+  for (const product of ["Satin bridal robe", "Engraved champagne duo", "Bridal morning gift set", "Bridesmaid proposal box", "Pearl jewellery keepsake"]) {
     await page.getByRole("combobox", { name: "Gift product", exact: true }).selectOption(product);
-    await expect(page.getByRole("img", { name: new RegExp(product + ",") })).toBeVisible();
+    await expect(page.locator(".gift-preview svg")).toBeVisible();
   }
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByRole("button", { name: "Continue", exact: true }).click();
@@ -129,14 +129,12 @@ test("all five gift previews update and invalid quantity is blocked", async ({ p
   await expect(page.getByText("Enter a quantity from 1 to 500.")).toBeVisible();
 });
 
-test("desktop hero plays original 4K footage with pause and rotation controls", async ({ page }) => {
+test("desktop hero plays original 4K footage automatically without playback controls", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1, name: "Every Detail. A Precious Memory." })).toBeVisible();
   await page.waitForFunction(() => { const v = document.querySelector<HTMLVideoElement>("video.active"); return !!v && v.videoWidth === 3840 && v.videoHeight === 2160 && !v.paused && v.currentTime > 0; });
-  await page.getByRole("button", { name: "Pause background videos" }).click();
-  await page.waitForFunction(() => Array.from(document.querySelectorAll("video")).every(v => v.paused));
-  await page.getByRole("button", { name: "Play background videos" }).click();
+  await expect(page.locator(".cinema-hero button")).toHaveCount(0);
   await expect(page.locator(".cinema-scene").nth(1)).toHaveClass(/active/, { timeout: 15000 });
   await page.screenshot({ path: "/workspace/outputs/precious-memoirs-desktop.png", fullPage: true });
 });
@@ -145,7 +143,7 @@ test("all generated product bases load and selected styling appears in the live 
   await page.goto("/studio?request=gift&product=Bridal%20morning%20gift%20set");
   await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toHaveValue("Bridal morning gift set");
   const paths = ["curated-satin-robe", "curated-champagne-duo", "curated-morning-set", "curated-proposal-box", "curated-jewellery"];
-  const names = ["Monogrammed satin robe", "Engraved champagne duo", "Bridal morning gift set", "Bridesmaid proposal box", "Pearl jewellery keepsake"];
+  const names = ["Satin bridal robe", "Engraved champagne duo", "Bridal morning gift set", "Bridesmaid proposal box", "Pearl jewellery keepsake"];
   for (let i = 0; i < names.length; i++) {
     await page.getByRole("combobox", { name: "Gift product", exact: true }).selectOption(names[i]);
     await expect(page.locator(".gift-preview image")).toHaveAttribute("href", "/images/" + paths[i] + ".webp");
@@ -192,7 +190,7 @@ test("gift showcase slowly advances without manual controls and opens the simple
   const first = await page.locator(".cylinder-card").first().getAttribute("style");
   await expect.poll(() => page.locator(".cylinder-card").first().getAttribute("style")).not.toBe(first);
   const product = await page.locator(".cylinder-index strong").textContent();
-  await expect.poll(() => page.locator(".cylinder-index strong").textContent(), { timeout: 16000 }).not.toBe(product);
+  await expect.poll(() => page.locator(".cylinder-index strong").textContent(), { timeout: 9000 }).not.toBe(product);
   await page.locator("#keepsakes").getByRole("link", { name: "Personalise a keepsake", exact: true }).click();
   await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toBeVisible();
 });
@@ -220,7 +218,7 @@ test("4K starts on mobile without interaction even with data saver, repeats and 
   await page.goto("/");
   await expect(page.locator("video.active")).toHaveAttribute("autoplay", "");
   await page.waitForFunction(() => { const video = document.querySelector<HTMLVideoElement>("video.active"); return !!video && video.videoWidth === 3840 && video.videoHeight === 2160 && !video.paused && video.currentTime > .1; });
-  await expect(page.getByRole("button", { name: "Pause background videos" })).toBeVisible();
+  await expect(page.locator(".cinema-hero button")).toHaveCount(0);
   await page.locator("video.active").evaluate((el: HTMLVideoElement) => { el.currentTime = el.duration - .3; });
   await page.waitForFunction(() => { const video = document.querySelector<HTMLVideoElement>("video.active"); return !!video && video.currentTime > 0 && video.currentTime < 1; });
   const response = await request.get("/videos/ivory-venue-4k.mp4", { headers: { Range: "bytes=0-1023" } });
@@ -249,17 +247,12 @@ test("home edits remove the named sections, gallery responds to hover and the fo
   await expect(page.locator(".privacy-information")).toContainText("localStorage");
 });
 
-test("homepage personalisation preview carries the name and selected gift into the studio", async ({ page }) => {
+test("homepage omits the separate name preview and retains studio personalisation", async ({ page }) => {
   await page.goto("/");
-  await page.locator(".personalisation-editorial").scrollIntoViewIfNeeded();
-  await page.getByRole("group", { name: "Choose a preview keepsake" }).getByRole("button", { name: "Bridesmaid proposal box", exact: true }).click();
-  await page.getByLabel("Try your name").fill("Amelia");
-  await expect(page.locator(".teaser-product-sculpture text")).toHaveText("Amelia");
-  await page.getByRole("link", { name: "Continue in the studio", exact: true }).click();
-  await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toHaveValue("Bridesmaid proposal box");
-  await expect(page.getByTestId("preview-name")).toHaveText("Amelia");
-  await page.reload();
-  await expect(page.getByTestId("preview-name")).toHaveText("Amelia");
+  await expect(page.locator(".personalisation-editorial")).toHaveCount(0);
+  await page.getByRole("link", { name: "Personalise a Gift", exact: true }).click();
+  await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toBeVisible();
+  await expect(page.locator(".gift-preview")).toBeVisible();
 });
 
 
@@ -280,4 +273,17 @@ test("legacy saved gifts keep their history while the new collection is availabl
   await expect(page.getByTestId("preview-name")).toHaveText("Amelia");
   const history = await page.evaluate(() => JSON.parse(localStorage.getItem("precious-memoirs-v1")!).enquiries[0].config.product);
   expect(history).toBe("Personalised bridal hanger");
+});
+
+
+test("satin robe has no name overlay or lettering controls", async ({ page }) => {
+  await page.goto("/studio?request=gift");
+  await page.getByRole("combobox", { name: "Gift product", exact: true }).selectOption("Satin bridal robe");
+  await expect(page.locator(".gift-preview svg text")).toHaveCount(0);
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await expect(page.getByLabel("Personalised name or text")).toHaveCount(0);
+  await expect(page.getByLabel("Font style")).toHaveCount(0);
+  await expect(page.getByLabel("Product colour", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Quantity", { exact: true })).toBeVisible();
 });
