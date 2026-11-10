@@ -3,9 +3,9 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useInView } from "./showcase-hooks";
 const categories = [
-  { name: "bridal", cta: "explore bridal", href: "/collections", src: "/videos/ivory-venue-mobile-hd.mp4", poster: "/videos/ivory-venue-4k.jpg" },
-  { name: "keepsakes", cta: "personalise a gift", href: "/studio?request=gift", src: "/videos/roses-raindrops-mobile-hd.mp4", poster: "/videos/roses-raindrops-4k.jpg" },
-  { name: "your moment", cta: "enter the studio", href: "/studio", src: "/videos/celebration-table-mobile-hd.mp4", poster: "/videos/celebration-table-4k.jpg" },
+  { name: "bridal", cta: "explore bridal", href: "/collections", src: "/videos/category-bridal.mp4", poster: "/videos/category-bridal.webp" },
+  { name: "keepsakes", cta: "personalise a gift", href: "/studio?request=gift", src: "/videos/category-gifting.mp4", poster: "/videos/category-gifting.webp" },
+  { name: "your moment", cta: "enter the studio", href: "/studio", src: "/videos/category-morning.mp4", poster: "/videos/category-morning.webp" },
 ];
 export default function VideoCategories() {
   const { ref, visible } = useInView<HTMLElement>(.1, true);

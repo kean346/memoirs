@@ -165,3 +165,127 @@
 /* Cutouts must not inherit the legacy global image background. */
 .runway-model img,.runway-piece img,.cylinder-front img { background: transparent; }
 .cylinder-edge { background: transparent; border: 1.5px solid #bda98a; box-shadow: none; }
+/* Focused enquiry concept: fewer sections, a personal touch, a quieter finish. */
+.personalisation-editorial { display: grid; grid-template-columns: 46% 54%; background: #28433b; color: #f9f0e2; min-height: 780px; overflow: hidden; }
+.personalisation-copy { padding: 80px 0 80px 15%; position: relative; z-index: 2; }
+.personalisation-copy > .eyebrow { font-size: 8px; color: #c0cebd; }
+.personalisation-copy h2 { font-size: clamp(56px,5.8vw,92px); line-height: 1; letter-spacing: -.055em; margin: 35px 0 25px; }
+.personalisation-copy h2 em { color: #e4ceb1; }
+.personalisation-copy > p:not(.eyebrow) { font-size: 13px; line-height: 1.9; max-width: 33ch; color: #d5ddd1; }
+.teaser-product-choices { display: flex; flex-wrap: wrap; gap: 7px; margin: 30px 0 23px; }
+.teaser-product-choices button { font-size: 9px; padding: 8px 12px; border-radius: 30px; color: #f9f0e2; border-color: #d8c3a866; }
+.teaser-product-choices button[aria-pressed="true"] { background: #e4ceb1; border-color: #e4ceb1; color: #28433b; }
+.teaser-product-choices button:hover { background: #e4ceb133; }
+.teaser-name { display: block; max-width: 340px; font-size: 10px; letter-spacing: .08em; }
+.teaser-name input { display: block; width: 100%; border: 0; border-bottom: 1px solid #d8c3a8; background: transparent; border-radius: 0; padding: 12px 0; font-family: var(--font-display); font-size: 25px; color: #fff7ec; margin-top: 6px; }
+.teaser-name input::placeholder { color: #ecdbc799; }
+.teaser-studio-link { display: flex; justify-content: space-between; align-items: center; max-width: 340px; gap: 18px; padding: 15px 0; margin-top: 24px; border-bottom: 1px solid #d8c3a877; font-size: 11px; }
+.personalisation-copy > small { display: block; color: #b7c8b7; font-size: 8px; margin-top: 18px; }
+.personalisation-stage { position: relative; display: flex; justify-content: center; align-items: center; padding: 60px 7%; min-width: 0; }
+.personalisation-stage::before { content: ""; position: absolute; width: 75%; height: 70%; background: #d9cfba; border-radius: 50% 50% 44% 44%; transform: rotate(8deg); }
+.personalisation-stage::after { content: ""; position: absolute; inset: 10% 9% 12%; border: 1px solid #dfd2b84d; border-radius: 48% 48% 45% 45%; transform: rotate(-8deg); pointer-events: none; }
+.teaser-product-sculpture { position: relative; z-index: 1; width: 100%; max-width: 500px; animation: keepsake-drift 9s ease-in-out infinite; animation-play-state: paused; }
+.personalisation-editorial.is-visible .teaser-product-sculpture { animation-play-state: running; }
+.teaser-product-sculpture svg { display: block; width: 100%; max-height: 620px; filter: drop-shadow(0 22px 15px #142d2820); }
+.teaser-stage-label { position: absolute; left: 10%; right: 10%; top: 45px; z-index: 2; text-align: center; font-size: 8px; letter-spacing: .14em; color: #e4ceb1; }
+.teaser-stage-caption { position: absolute; left: 10%; right: 10%; bottom: 42px; z-index: 2; display: flex; justify-content: space-between; gap: 12px; font-size: 7px; letter-spacing: .09em; color: #e4ceb1; }
+@keyframes keepsake-drift { 0%,100% { transform: translateY(7px) rotate(-1deg); } 50% { transform: translateY(-7px) rotate(1deg); } }
+.inspiration-section { background: #f0ede7; padding-bottom: 120px; }
+.fluid-gallery { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 5%; align-items: start; padding: 20px 0; }
+.fluid-gallery-item { min-width: 0; }
+.fluid-gallery-item:nth-child(1) { padding-top: 55px; }
+.fluid-gallery-item:nth-child(3) { padding-top: 95px; }
+.fluid-gallery .fluid-gallery-card { display: block; width: 100%; min-width: 0; padding: 0; background: transparent; border: 0; text-align: left; transform: translate3d(var(--magnetic-x,0px),var(--magnetic-y,0px),0); transition: transform .65s cubic-bezier(.2,.8,.2,1); }
+.fluid-gallery-frame { overflow: hidden; border-radius: 47% 47% 8% 8%; transform-origin: 50% 70%; animation: gallery-water 10s ease-in-out infinite; animation-play-state: paused; transition: box-shadow .7s; }
+.fluid-gallery.is-in-view .fluid-gallery-frame { animation-play-state: running; }
+.fluid-gallery-item:nth-child(2) .fluid-gallery-frame { animation-delay: -3.3s; }
+.fluid-gallery-item:nth-child(3) .fluid-gallery-frame { animation-delay: -6.6s; }
+.fluid-gallery .fluid-gallery-frame img { width: 100%; height: clamp(330px,34vw,530px); object-fit: cover; background: transparent; transform: scale(1.015); transition: transform 1.2s cubic-bezier(.2,.8,.2,1); }
+.fluid-gallery .fluid-gallery-card:hover img,.fluid-gallery .fluid-gallery-card:focus-visible img { transform: scale(1.07); }
+.fluid-gallery-card:hover .fluid-gallery-frame { box-shadow: 0 22px 36px #463a3020; }
+.fluid-gallery .fluid-gallery-card > span { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 24px 3px 0; }
+.fluid-gallery .fluid-gallery-card > span .eyebrow { grid-column: 1/-1; font-size: 8px; color: #79635b; }
+.fluid-gallery .fluid-gallery-card strong { font-family: var(--font-display); font-size: clamp(23px,2.1vw,33px); font-weight: 400; color: #332c27; line-height: 1.15; }
+.fluid-gallery-card > span svg { align-self: end; transition: transform .5s; }
+.fluid-gallery-card:hover > span svg { transform: rotate(90deg); }
+@keyframes gallery-water { 0%,100% { border-radius: 47% 47% 8% 8%; transform: translateY(5px) rotate(-.6deg); } 50% { border-radius: 43% 48% 12% 6%; transform: translateY(-9px) rotate(.7deg); } }
+.cylinder-autoplay,.cylinder-autoplay:active { cursor: default; touch-action: pan-y; }
+.cylinder-card-mark { width: 26px; height: 26px; display: grid; place-items: center; border: 1px solid #493a2c66; border-radius: 50%; }
+.cylinder-back-signature { font-size: 7px; letter-spacing: .16em; margin-top: auto; }
+.cylinder-autoplay .cylinder-front,.cylinder-autoplay .cylinder-back { pointer-events: none; }
+.professional-footer { background: #202d28; color: #eee8db; padding: 0; }
+.footer-main { display: grid; grid-template-columns: 1.2fr .8fr .95fr 1.35fr; gap: 6%; padding: 70px 7% 55px; }
+.footer-brand-block .brand { font-size: 35px; color: #f7eedc; display: inline-block; }
+.footer-brand-block p { margin: 23px 0; font-size: 12px; line-height: 1.8; color: #c5cdbf; }
+.footer-brand-block > span { font-size: 7px; letter-spacing: .12em; color: #acb9a6; }
+.footer-main nav { display: flex; flex-direction: column; align-items: flex-start; gap: 13px; }
+.footer-main nav h2 { font: 500 10px var(--font-sans); letter-spacing: .08em; margin: 5px 0 13px; }
+.footer-main nav a { font-size: 10px; color: #c5cdbf; transition: color .2s; }
+.footer-main nav a:hover { color: #fff7e7; }
+.footer-enquiry h2 { font-size: 29px; line-height: 1.1; margin: 0 0 18px; }
+.footer-enquiry p { font-size: 10px; line-height: 1.8; color: #c5cdbf; }
+.footer-enquiry > a { display: inline-flex; gap: 25px; align-items: center; font-size: 10px; padding: 10px 0; border-bottom: 1px solid #bbab8b; }
+.footer-bottom { margin: 0 7%; padding: 25px 0; border-top: 1px solid #c5cdbf33; display: flex; flex-wrap: wrap; align-items: center; gap: 15px 30px; color: #aeb9a6; font-size: 8px; }
+.footer-bottom > span:last-child { margin-left: auto; }
+.footer-bottom button { padding: 0; border: 0; background: transparent; font-size: inherit; color: inherit; }
+.professional-footer .footer-demo-note { margin: 0; padding: 0 7% 25px; font-size: 8px; color: #aeb9a6; }
+.tour-launch-marketing { display: none; }
+.privacy-information { padding: 75px 7% 100px; max-width: 1000px; }
+.privacy-information h1 { font-size: clamp(48px,6vw,80px); margin-bottom: 35px; }
+.privacy-information h2 { font-size: 28px; margin-top: 35px; }
+.privacy-information p { max-width: 70ch; font-size: 14px; line-height: 1.9; }
+.bridal-preview-pair { display: grid; grid-template-columns: minmax(0,1fr) 145px; align-items: end; gap: 12px; }
+.bridal-preview-pair .moodboard-main > img { width: 100%; height: auto; aspect-ratio: 2/3; max-height: 590px; object-fit: cover; }
+.bridal-preview-pair .moodboard-main > div { padding: 22px; }
+.bridal-preview-pair .moodboard-main h2 { font-size: 28px; line-height: 1.05; }
+.bridal-preview-pair .moodboard-main .eyebrow { font-size: 7px; }
+.style-reference { margin: 0; padding: 8px; background: #fffdfa; border: 1px solid #d4c4b4; border-bottom: 3px solid var(--style-accent); }
+.style-reference-image { width: 100%; aspect-ratio: 1; background-image: url('/images/bridal-style-sheet.webp'); background-size: 300% 200%; }
+.style-reference figcaption { padding: 12px 2px 4px; }
+.style-reference figcaption > span { display: block; font-size: 7px; letter-spacing: .08em; color: #79635b; }
+.style-reference strong { display: block; font: 400 21px/1.1 var(--font-display); margin: 9px 0 13px; }
+.style-reference small { display: block; font-size: 8px; color: #79635b; }
+.style-reference-swatches { display: flex; gap: 5px; margin-bottom: 10px; }
+.style-reference-swatches i { width: 16px; height: 16px; border: 1px solid #79635b33; border-radius: 50%; }
+.preview-request-details { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; }
+.preview-request-details > span { font-size: 9px; padding: 5px 8px; background: #e8dfd4; color: #51413e; border-radius: 3px; }
+@media(max-width:1000px) { .footer-main { grid-template-columns: 1fr 1fr; gap: 45px 10%; } .personalisation-copy { padding-left: 10%; } .bridal-preview-pair { grid-template-columns: minmax(0,1fr) 115px; } }
+@media(max-width:760px) {
+  .personalisation-editorial { grid-template-columns: 1fr; }
+  .personalisation-copy { padding: 65px 7% 20px; }
+  .personalisation-copy h2 { font-size: 65px; margin: 25px 0; }
+  .personalisation-stage { min-height: 570px; padding: 45px 7%; }
+  .teaser-stage-label { top: 25px; }
+  .teaser-stage-caption { bottom: 25px; }
+  .teaser-product-sculpture svg { max-height: 480px; }
+  .fluid-gallery { grid-template-columns: 1fr; gap: 50px; padding: 0; }
+  .fluid-gallery-item:nth-child(1),.fluid-gallery-item:nth-child(3) { padding-top: 0; }
+  .fluid-gallery-item { width: 88%; }
+  .fluid-gallery-item:nth-child(2) { justify-self: end; }
+  .fluid-gallery .fluid-gallery-frame img { height: 430px; }
+  .fluid-gallery .fluid-gallery-card strong { font-size: 27px; }
+  .footer-main { padding: 55px 7% 35px; gap: 38px 8%; }
+  .footer-brand-block,.footer-enquiry { grid-column: 1/-1; }
+  .footer-bottom { gap: 18px 22px; }
+  .footer-bottom > span:last-child { margin-left: 0; width: 100%; }
+  .bridal-preview-pair { grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); }
+  .bridal-preview-pair .moodboard-main > div { padding: 14px; }
+  .bridal-preview-pair .moodboard-main h2 { font-size: 20px; }
+  .bridal-preview-pair .moodboard-main .eyebrow { display: none; }
+  .style-reference { padding: 6px; }
+  .style-reference strong { font-size: 18px; }
+  .style-reference figcaption > span { font-size: 6px; }
+  .style-reference small { font-size: 7px; }
+}
+@media(prefers-reduced-motion:reduce) { .fluid-gallery-frame,.teaser-product-sculpture { animation: none; } .fluid-gallery .fluid-gallery-card,.fluid-gallery .fluid-gallery-frame img { transform: none; transition: none; } }
+.preview-request-note { font-size: 10px; color: #51413e; background: #eee6dd; padding: 10px 12px; overflow-wrap: anywhere; line-height: 1.6; margin: 0 0 12px; }
+.preview-request-note b { display: block; font-size: 8px; letter-spacing: .08em; text-transform: uppercase; color: #795d52; margin-bottom: 4px; }
+.footer-brand-block .brand { display: inline-flex; }
+.footer-main nav h2 { font-size: 11px; }
+.footer-main nav a,.footer-enquiry p,.footer-enquiry > a { font-size: 12px; }
+.footer-brand-block p { font-size: 13px; }
+.footer-brand-block > span { font-size: 8px; }
+.footer-bottom { font-size: 9px; }
+.professional-footer .footer-demo-note { display: block; max-width: none; width: 100%; font-size: 9px; }
+.style-option-reference { width: 100%; height: 120px; background-image: url('/images/bridal-style-sheet.webp'); background-size: 300% auto; }
+@media(max-width:760px) { .style-option-reference { height: 100px; } }

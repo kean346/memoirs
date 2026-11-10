@@ -26,7 +26,10 @@ export function exportPDF(d: Data, q: Quote, brief = false) {
   line(e.config.name + " / " + e.config.email);
   line(e.config.occasion + " / " + e.config.style, 16);
   line(e.config.date + " at " + e.config.time + " / " + e.config.location);
-  line("Selected gown: " + e.config.gown);
+  if (e.config.occasion === "Bridal Consultation") {
+    line("Selected gown: " + e.config.gown);
+    if (e.config.message) line("Consultation preferences: " + e.config.message);
+  }
   if (e.config.occasion === "Personalised Gift") {
     line("Product: " + e.config.product + " / Quantity: " + e.config.quantity);
     line("Personalisation: " + (e.config.message || "None"));

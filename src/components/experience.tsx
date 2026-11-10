@@ -46,6 +46,9 @@ import VideoHero from "./video-hero";
 import RunwayLookbook from "./runway-lookbook";
 import GiftCylinder from "./gift-cylinder";
 import VideoCategories from "./video-categories";
+import PersonalisationTeaser from "./personalisation-teaser";
+import StyleReference, { styleBackgroundPosition } from "./style-reference";
+import { useInView } from "./showcase-hooks";
 import GiftPreview, { giftImages } from "./gift-preview";
 import {
   gowns,
@@ -53,8 +56,6 @@ import {
 } from "@/lib/catalogue";
 const KEY = "precious-memoirs-v1";
 const image = (i: number) => i % 6 === 5 ? "/images/bridal-robe.webp" : "/images/gown-" + (i % 5) + ".webp";
-const themeImage = (style: string) =>
-  image([1, 2, 0, 5, 3, 4][Math.max(0, styles.indexOf(style))]);
 const categories = gowns;
 const slugs = ["seraphina", "aurelia", "celeste", "vivienne", "elara"];
 const descriptions = [
@@ -145,6 +146,7 @@ export default function Experience() {
     return () => window.removeEventListener("storage", sync);
   }, []);
   useEffect(() => {
+    if (path === "/studio" && searchParams.get("request") === "bridal") setConfig(current => ({ ...current, occasion: "Bridal Consultation" }));
     if (path === "/studio" && searchParams.get("request") === "gift") {
       const product = searchParams.get("product");
       setConfig(current => ({ ...current, occasion: "Personalised Gift", ...(product && gifts.includes(product) ? { product } : {}) }));
@@ -300,6 +302,8 @@ export default function Experience() {
           <main id="main">
             {path === "/" ? (
               <Home configure={updateConfig} />
+            ) : path === "/privacy" ? (
+              <PrivacyInformation />
             ) : path.startsWith("/collections") ? (
               <Collections path={path} data={data} configure={updateConfig} />
             ) : path === "/gallery" ? (
@@ -323,33 +327,14 @@ export default function Experience() {
               </section>
             )}
           </main>
-          <footer>
-            <div className="footer-title">
-              Beautifully considered.
-              <br />
-              <em>Unforgettably yours.</em>
-            </div>
-            <div className="footer-row">
-              <Link className="brand" href="/">
-                Precious<span>MEMOIRS</span>
-              </Link>
-              {nav}
-              <Link href="/admin">Studio Manager ↗</Link>
-            </div>
-            <div className="fineprint">
-              <span>
-                Block 8, Gaborone, Botswana · Browser-only demonstration.
-              </span>
-              <span>
-                Interactive concept by <a href="https://paceit.co.za">paceIT</a>{" "}
-                · Design inspiration: <a href="https://8b.com">8B</a>
-              </span>
-            </div>
+          <footer className="professional-footer">
+            <div className="footer-main"><div className="footer-brand-block"><Link className="brand" href="/">Precious<span>MEMOIRS</span></Link><p>Bridal elegance.<br />A more personal kind of gifting.</p><span>BLOCK 8 · GABORONE · BOTSWANA</span></div><nav aria-label="Footer collections"><h2>Discover</h2><Link href="/collections">The bridal edit</Link><Link href="/gallery">Inspiration gallery</Link><Link href="/#questions">Thoughtful answers</Link></nav><nav aria-label="Footer personalisation"><h2>Make it personal</h2><Link href="/studio?request=gift">Personalise a keepsake</Link><Link href="/studio?request=bridal">Bridal consultation</Link><Link href="/studio/review">Review your saved brief</Link></nav><div className="footer-enquiry"><h2>Your next precious moment.</h2><p>Tell us what you have in mind.<br />Final details and availability are confirmed on enquiry.</p><Link href="/studio">Start your brief <ArrowUpRight size={16} /></Link></div></div>
+            <div className="footer-bottom"><span>© 2026 Precious Memoirs</span><Link href="/privacy">Privacy & data</Link><button onClick={() => setTour(true)}>Demo walkthrough</button><Link href="/admin">Demo workspace</Link><span>Concept: <a href="https://paceit.co.za">paceIT</a> · Design inspiration: <a href="https://8b.com">8B</a></span></div><p className="footer-demo-note">Concept demonstration · Generated product imagery · Requests currently stay in this browser</p>
           </footer>
         </>
       )}
       {!tour ? (
-        <button className="tour-launch" onClick={() => setTour(true)}>
+        <button className={"tour-launch" + (!admin ? " tour-launch-marketing" : "")} onClick={() => setTour(true)}>
           Explore the Experience <ArrowUpRight size={16} />
         </button>
       ) : (
@@ -429,6 +414,9 @@ export default function Experience() {
     </>
   );
 }
+function PrivacyInformation() {
+  return <section className="privacy-information"><p className="eyebrow">PRECIOUS MEMOIRS / CONCEPT DEMONSTRATION</p><h1>Privacy & data.</h1><p>This concept stores your draft, sample requests, quotations and settings in localStorage in this browser. It does not currently send enquiries to Precious Memoirs or save them in a business database.</p><h2>Your saved information</h2><p>Use fictional details while exploring. Data is specific to this browser and website address. You can export or reset demo records in Studio Manager settings, or clear this website’s storage in your browser.</p><h2>Images and product availability</h2><p>The collection uses generated demonstration imagery and licensed inspiration footage. Products, prices, appointments and availability require business confirmation.</p><h2>Before a real launch</h2><p>A business-approved privacy notice, secure staff access, server-backed request handling and working enquiry delivery are still required. This page explains the current demonstration; it is not the final business privacy policy.</p><Link className="text-link" href="/">Return to the collection <ArrowUpRight size={16} /></Link></section>;
+}
 function Home({ configure }: { configure: (c: Partial<Config>) => void }) {
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -447,17 +435,8 @@ function Home({ configure }: { configure: (c: Partial<Config>) => void }) {
         gsap.utils.toArray<HTMLElement>(".frame-reveal").forEach((el, i) => {
           gsap.from(el, { y: 60, opacity: 0, duration: 1, delay: (i % 5) * 0.08, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 94%", toggleActions: "play none none reverse" } });
         });
-        gsap.from(".photo-stack .gallery-card", {
-          x: (i) => (1 - i) * 160,
-          y: (i) => Math.abs(i - 1) * 70,
-          rotation: (i) => (i - 1) * 9,
-          scale: 0.85,
-          scrollTrigger: {
-            trigger: ".photo-stack",
-            start: "top 90%",
-            end: "top 20%",
-            scrub: 1,
-          },
+        gsap.utils.toArray<HTMLElement>(".fluid-gallery-item").forEach((el, i) => {
+          gsap.from(el, { y: 90, opacity: 0, rotation: (i - 1) * 5, scale: .92, duration: 1.35, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 94%", toggleActions: "play none none reverse" } });
         });
       });
     }, root);
@@ -466,44 +445,10 @@ function Home({ configure }: { configure: (c: Partial<Config>) => void }) {
   return (
     <div ref={root}>
       <VideoHero />
-      <section id="introduction" className="editorial-invitation">
-        <p className="eyebrow reveal">GABORONE, BOTSWANA / A MORE PERSONAL KIND OF BRIDAL</p>
-        <h2 className="reveal">For the entrance.<br /><em>For the memories.</em><br />For you.</h2>
-        <div className="invitation-foot"><span>GOWNS & PERSONAL KEEPSAKES</span><p>A considered collection of silhouettes and little things with meaning. Made personal, from the first thought to the final detail.</p><Link href="/collections">Discover the edit <ArrowUpRight size={18} /></Link></div>
-      </section>
       <RunwayLookbook select={gown => configure({ occasion: "Bridal Consultation", gown, officialPackage: gown })} />
       <VideoCategories />
-      <section className="studio-feature section">
-        <img
-          src="/images/bridal-robe.webp"
-          alt="Fictional satin bridal robe ready for personalisation"
-          loading="lazy"
-        />
-        <div className="reveal">
-          <p className="eyebrow">PERSONALISED BRIDAL GIFTS</p>
-          <h2>
-            Make it
-            <br />
-            <em>yours.</em>
-          </h2>
-          <p>
-            Your name. Your colour. Your own thoughtful detail. Personalise a bridal robe, champagne flute, slippers, gift box or hanger with a live illustrative preview.
-          </p>
-          <div className="chips">
-            <span>Your name</span>
-            <span>Your colour</span>
-            <span>Your date</span>
-          </div>
-          <Link className="button" href="/studio">
-            Start Designing <ArrowUpRight size={16} />
-          </Link>
-          <small>
-            Illustrative products. Every final detail is confirmed with
-            you.
-          </small>
-        </div>
-      </section>
-      <section className="section">
+      <PersonalisationTeaser configure={configure} />
+      <section className="section inspiration-section">
         <div className="section-heading">
           <div>
             <p className="eyebrow">THE INSPIRATION EDIT</p>
@@ -518,18 +463,6 @@ function Home({ configure }: { configure: (c: Partial<Config>) => void }) {
         <Gallery compact />
       </section>
       <GiftCylinder />
-      <section className="boutique-story" id="boutique">
-        <div className="boutique-photo frame-reveal"><img src={collectionImage(3)} alt="Generated couture bridal gown in a sunlit atelier" loading="lazy" /></div>
-        <div className="boutique-copy"><p className="eyebrow reveal">PRECIOUS MEMOIRS / BLOCK 8, GABORONE</p><h2 className="reveal">A chapter<br />that feels<br /><em>entirely you.</em></h2><p className="reveal">The clean line of satin. A whisper of lace. A keepsake with your name. Discover the details that feel like your story, then bring your ideas into the bridal studio.</p><Link className="text-link" href="/studio">Begin your bridal brief <ArrowUpRight size={18} /></Link><span className="boutique-note">Fictional collection · Consultation availability confirmed on enquiry</span></div>
-      </section>
-      <section className="section bridal-process" id="your-chapter">
-        <div className="section-heading"><div><p className="eyebrow">FROM A FIRST THOUGHT TO A PRECIOUS MEMORY</p><h2 className="reveal">Your bridal chapter,<br /><em>beautifully considered.</em></h2></div></div>
-        <div className="process-grid">{[
-          ["01", "Find your feeling.", "Explore satin, lace and soft silhouettes. Save the gown that feels most like you.", "/collections", "Explore the gowns"],
-          ["02", "Make your mark.", "Add a name, choose your lettering and colour, and watch your keepsake come together in the live preview.", "/studio?request=gift", "Personalise a keepsake"],
-          ["03", "Share your story.", "Build your brief and request a consultation or quotation. Dates, availability and final details need confirmation.", "/studio", "Create your brief"],
-        ].map(([n, title, copy, href, cta]) => <article className="process-step frame-reveal" key={n}><span>{n}</span><h3>{title}</h3><p>{copy}</p><Link className="text-link" href={href}>{cta} <ArrowUpRight size={16} /></Link></article>)}</div>
-      </section>
       <section className="section bridal-faq" id="questions">
         <div><p className="eyebrow">BEFORE YOUR NEXT CHAPTER</p><h2 className="reveal">A few<br /><em>thoughtful answers.</em></h2></div>
         <div>{[
@@ -539,17 +472,6 @@ function Home({ configure }: { configure: (c: Partial<Config>) => void }) {
           ["Can I save my design?", "Your draft saves in this browser as you make changes. Completed demo requests appear in Studio Manager, with their personalisation details retained."],
           ["Where is Precious Memoirs?", "The business location supplied for this concept is Block 8, Gaborone, Botswana. Appointment times and directions require business confirmation."],
         ].map(([question, answer]) => <details key={question}><summary>{question}<Plus size={17} /></summary><p>{answer}</p></details>)}</div>
-      </section>
-      <section className="closing section">
-        <p className="eyebrow">EVERY DETAIL TELLS A STORY</p>
-        <h2>
-          Let’s create something
-          <br />
-          <em>unforgettable.</em>
-        </h2>
-        <Link className="button" href="/studio">
-          Begin Your Experience <ArrowUpRight size={17} />
-        </Link>
       </section>
     </div>
   );
@@ -631,6 +553,7 @@ function Collections({
   );
 }
 function Gallery({ compact = false }: { compact?: boolean }) {
+  const { ref: fluidRef, visible: fluidVisible } = useInView<HTMLDivElement>(.05);
   const [filter, setFilter] = useState("All"),
     [open, setOpen] = useState<number | null>(null);
   const titles = [
@@ -671,17 +594,13 @@ function Gallery({ compact = false }: { compact?: boolean }) {
           </div>
         </section>
       )}
-      <div className={"gallery-grid " + (compact ? "photo-stack" : "section")}>
-        {indices.map((i) => (
-          <button className="gallery-card" key={i} onClick={() => setOpen(i)}>
-            <img src={image(i)} alt={titles[i]} loading="lazy" />
-            <span>
-              <span className="eyebrow">INSPIRATION / 0{i + 1}</span>
-              <strong>{titles[i]}</strong>
-              <Plus size={18} />
-            </span>
-          </button>
-        ))}
+      <div ref={fluidRef} className={compact ? "fluid-gallery" + (fluidVisible ? " is-in-view" : "") : "gallery-grid section"}>
+        {indices.map((i) => {
+          const card = <button className={compact ? "gallery-card fluid-gallery-card" : "gallery-card"} key={i} onClick={() => setOpen(i)} onPointerMove={e => { if (!compact || e.pointerType === "touch") return; const bounds = e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty("--magnetic-x", ((e.clientX - bounds.left) / bounds.width - .5) * 16 + "px"); e.currentTarget.style.setProperty("--magnetic-y", ((e.clientY - bounds.top) / bounds.height - .5) * 12 + "px"); }} onPointerLeave={e => { e.currentTarget.style.setProperty("--magnetic-x", "0px"); e.currentTarget.style.setProperty("--magnetic-y", "0px"); }}>
+            <div className={compact ? "fluid-gallery-frame" : "gallery-photo"}><img src={image(i)} alt={titles[i]} loading="lazy" /></div><span><span className="eyebrow">INSPIRATION / 0{i + 1}</span><strong>{titles[i]}</strong><Plus size={18} /></span>
+          </button>;
+          return compact ? <div className="fluid-gallery-item" key={i}>{card}</div> : card;
+        })}
       </div>
       {open !== null && (
         <Modal title={titles[open]} close={() => setOpen(null)}>
@@ -837,8 +756,11 @@ function Studio({
       </div>
       <div className="builder">
         <aside className="moodboard">
-          {c.occasion === "Personalised Gift" ? <GiftPreview config={c} /> : <div className="moodboard-main"><img src={collectionImage(Math.max(0, gowns.indexOf(c.gown)))} alt={c.gown + " AI-generated demonstration image"} /><div><span className="eyebrow">YOUR BRIDAL CONSULTATION</span><h2>{c.gown}</h2></div></div>}
+          {c.occasion === "Personalised Gift" ? <GiftPreview config={c} /> : <div className="bridal-preview-pair"><div className="moodboard-main"><img src={collectionImage(Math.max(0, gowns.indexOf(c.gown)))} alt={c.gown + " AI-generated demonstration image"} /><div><span className="eyebrow">YOUR BRIDAL CONSULTATION</span><h2>{c.gown}</h2></div></div><StyleReference style={c.style} /></div>}
           <div className="palette"><i style={{ background: c.productColour }} /><i style={{ background: c.textColour }} /><span>{c.style}</span></div>
+          <div className="preview-request-details" aria-live="polite"><span>{c.occasion}</span>{c.date && <span>{c.date}{c.time ? " · " + c.time : ""}</span>}{c.name && <span>{c.name}</span>}{c.location && <span>{c.location}</span>}</div>
+          {c.occasion === "Bridal Consultation" && c.message && <p className="preview-request-note"><b>Preferences</b>{c.message}</p>}
+          {c.notes && <p className="preview-request-note"><b>Your note</b>{c.notes}</p>}
           <small>Fictional demonstration products. AI-generated imagery; final materials and availability require confirmation.</small>
         </aside>
         <div className="builder-controls">
@@ -909,7 +831,7 @@ function Studio({
                     }
                     onClick={() => update({ style: s })}
                   >
-                    <img src={themeImage(s)} alt={s + " inspiration"} />
+                    <div className="style-option-reference" role="img" aria-label={s + " styling reference"} style={{ backgroundPosition: styleBackgroundPosition(s) }} />
                     <span>
                       {s}
                       {c.style === s && <Check size={15} />}
@@ -942,6 +864,7 @@ function Studio({
                   {field("date", c.occasion === "Personalised Gift" ? "Required by date" : "Wedding date", "date")}
                   {field("time", "Preferred time", "time")}
                   {field("location", "Location / venue")}
+                  {c.occasion === "Bridal Consultation" && <>
                   {field("guests", "Bridal party size", "number")}
                   <Field label="Venue type">
                     <select
@@ -966,6 +889,7 @@ function Studio({
                       ))}
                     </select>
                   </Field>
+                  </>}
                 </div>
                 <Field label="Additional notes">
                   <textarea
@@ -983,7 +907,7 @@ function Studio({
               <>
                 <p className="note">
                   This is a browser-only product demonstration. Use fictional
-                  details only; nothing is emailed or sent to PM.
+                  details only; nothing is emailed or sent to Precious Memoirs.
                 </p>
                 <div className="form-grid">
                   {field("name", "Full name")}
@@ -1096,23 +1020,17 @@ function Summary({ c }: { c: Config }) {
     <dl className="summary">
       {[
         ["Request type", c.occasion],
+        ...(c.occasion === "Bridal Consultation" ? [["Selected gown", c.gown]] : [["Gift product", c.product], ["Quantity", String(c.quantity)]]),
         ["Style", c.style],
-        ["Selected gown", c.occasion === "Bridal Consultation" ? c.gown : "—"],
-        ["Gift product", c.occasion === "Personalised Gift" ? c.product : "—"],
-        ["Quantity", c.occasion === "Personalised Gift" ? String(c.quantity) : "1"],
-        ["Font", c.lettering],
-        ["Text colour", c.textColour],
-        ["Product colour", c.productColour],
-        ["Decorative motif", c.motif],
-        ["Date & time", c.date + " · " + c.time],
+        ...(c.occasion === "Personalised Gift" ? [["Font", c.lettering], ["Text colour", c.textColour], ["Product colour", c.productColour], ["Decorative motif", c.motif]] : []),
+        [c.occasion === "Bridal Consultation" ? "Wedding date & time" : "Required date & time", c.date + " · " + c.time],
         ["Location", c.location],
-        ["Guests / venue", c.guests + " / " + c.venue],
-        ["Budget", c.budget],
+        ...(c.occasion === "Bridal Consultation" ? [["Bridal party / venue", c.guests + " / " + c.venue], ["Budget", c.budget]] : []),
         ["Customer", c.name],
         ["Contact", c.email + " / " + c.phone + " / " + c.contact],
-        ["Personalisation", c.message || "None"],
+        [c.occasion === "Personalised Gift" ? "Personalisation" : "Consultation preferences", c.message || "None"],
         ["Requirements", c.notes || "None"],
-        ["Inspiration", c.reference || "None"],
+        ...(c.reference ? [["Inspiration", c.reference]] : []),
       ].map(([k, v]) => (
         <div key={k}>
           <dt>{k}</dt>

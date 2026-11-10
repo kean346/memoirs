@@ -63,7 +63,7 @@ export const example: Config = {
   name: "Lerato Mokoena",
   email: "lerato@example.com",
   phone: "DEMO ONLY",
-  message: "Sarah",
+  message: "",
   consent: true,
 };
 export const defaults: Package[] = [

@@ -1,0 +1,32 @@
+[
+  {
+    "file": "category-bridal.mp4",
+    "poster": "category-bridal.webp",
+    "duration": 12.0,
+    "width": 720,
+    "height": 1280,
+    "fps": 24,
+    "source": "AI-generated editorial image with a seamless slow camera-motion treatment; not filmed stock footage.",
+    "sha256": "b307e453ba7a1d617b76941931a064b7a4c5155cd79140b6f423b5ed85da47f7"
+  },
+  {
+    "file": "category-gifting.mp4",
+    "poster": "category-gifting.webp",
+    "duration": 12.0,
+    "width": 720,
+    "height": 1280,
+    "fps": 24,
+    "source": "AI-generated editorial image with a seamless slow camera-motion treatment; not filmed stock footage.",
+    "sha256": "e0f756831807bbe017e6673542deed4537e4910bd9a284f8d0c2263274f4a1be"
+  },
+  {
+    "file": "category-morning.mp4",
+    "poster": "category-morning.webp",
+    "duration": 12.0,
+    "width": 720,
+    "height": 1280,
+    "fps": 24,
+    "source": "AI-generated editorial image with a seamless slow camera-motion treatment; not filmed stock footage.",
+    "sha256": "1d4fbead2fc431dd8f9bd756e0607c370478d88b5bd13f1d761a029c809cf1dd"
+  }
+]

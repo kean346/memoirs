@@ -60,18 +60,35 @@ test("gift personalisation persists through enquiry, quotation PDF and confirmed
   expect(errors).toEqual([]);
 });
 
-test("bridal collection consultation retains selected gown", async ({ page }) => {
+test("bridal consultation shows gown and style reference and retains every choice", async ({ page }) => {
   await page.goto("/collections/aurelia");
   await page.getByRole("link", { name: "Request a Consultation", exact: true }).click();
   await expect(page.getByRole("combobox", { name: "Selected gown", exact: true })).toHaveValue("Aurelia — Romantic Lace");
   await page.getByRole("button", { name: "Load Example", exact: true }).click();
   await page.getByRole("combobox", { name: "Selected gown", exact: true }).selectOption("Aurelia — Romantic Lace");
-  for (let i = 0; i < 5; i++) await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await expect(page.locator(".bridal-preview-pair .moodboard-main img")).toHaveAttribute("src", "/images/gown-1.webp");
+  await expect(page.locator(".style-reference")).toHaveAttribute("data-style", "Ivory Elegance");
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.getByRole("button", { name: /Blush Romance/ }).click();
+  await expect(page.locator(".style-reference")).toHaveAttribute("data-style", "Blush Romance");
+  await expect(page.locator(".style-reference-image")).toHaveCSS("background-position", "50% 0%");
+  await page.evaluate(async () => { const image = new Image(); image.src = "/images/bridal-style-sheet.webp"; await image.decode(); });
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.getByLabel("Bridal consultation preferences").fill("Ivory lace with blush details");
+  await expect(page.locator(".preview-request-note")).toContainText("Ivory lace with blush details");
+  await page.locator(".moodboard").screenshot({ path: "/workspace/outputs/bridal-two-image-preview.png" });
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.getByLabel("Additional notes").fill("Please discuss sleeve options");
+  await expect(page.locator(".moodboard")).toContainText("Please discuss sleeve options");
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByRole("button", { name: "Request a Consultation", exact: true }).click();
   await page.getByRole("link", { name: "View in Studio Manager" }).click();
   await expect(page.locator(".summary")).toContainText("Aurelia — Romantic Lace");
+  await expect(page.locator(".summary")).toContainText("Blush Romance");
+  await expect(page.locator(".summary")).toContainText("Please discuss sleeve options");
   await page.reload();
-  await expect(page.locator(".summary")).toContainText("Aurelia — Romantic Lace");
+  await expect(page.locator(".summary")).toContainText("Ivory lace with blush details");
 });
 
 test("mobile routes, local assets, navigation and reduced motion remain accessible", async ({ page }) => {
@@ -163,21 +180,19 @@ test("depth runway loops, synchronises products and opens the selected gown in t
   await expect(page.getByRole("combobox", { name: "Selected gown", exact: true })).toHaveValue("Aurelia — Romantic Lace");
 });
 
-test("layered gift cylinder responds to controls and carries the selected gift into the preview", async ({ page }) => {
+test("gift showcase slowly advances without manual controls and opens the simple gift request", async ({ page }) => {
   await page.goto("/");
   await page.locator("#keepsakes").scrollIntoViewIfNeeded();
   await expect(page.locator(".cylinder-card")).toHaveCount(5);
-  await expect(page.locator(".cylinder-front")).toHaveCount(5);
-  await expect(page.locator(".cylinder-back")).toHaveCount(5);
+  await expect(page.locator("#keepsakes button")).toHaveCount(0);
   await expect(page.locator(".cylinder-camera")).toHaveCSS("perspective", "1350px");
   await expect(page.locator(".cylinder-scene")).toHaveCSS("touch-action", "pan-y");
-  await page.getByRole("button", { name: "Pause gift rotation" }).click();
-  await page.getByRole("button", { name: "Next gift", exact: true }).click();
-  await expect(page.locator(".cylinder-index strong")).toHaveText("Champagne flute");
-  await expect(page.locator(".cylinder-card").nth(1)).toHaveAttribute("style", /translateZ/);
-  await page.locator("#keepsakes").screenshot({ path: "/workspace/outputs/gift-cylinder-tested.png" });
-  await page.getByRole("link", { name: "Personalise champagne flute", exact: true }).click();
-  await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toHaveValue("Champagne flute");
+  const first = await page.locator(".cylinder-card").first().getAttribute("style");
+  await expect.poll(() => page.locator(".cylinder-card").first().getAttribute("style")).not.toBe(first);
+  const product = await page.locator(".cylinder-index strong").textContent();
+  await expect.poll(() => page.locator(".cylinder-index strong").textContent(), { timeout: 16000 }).not.toBe(product);
+  await page.locator("#keepsakes").getByRole("link", { name: "Personalise a keepsake", exact: true }).click();
+  await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toBeVisible();
 });
 
 test("vertical video categories reveal, autoplay and link to the existing pages on mobile", async ({ page }) => {
@@ -186,6 +201,8 @@ test("vertical video categories reveal, autoplay and link to the existing pages 
   await page.locator(".video-categories").scrollIntoViewIfNeeded();
   await expect(page.locator(".video-category")).toHaveCount(3);
   await expect(page.locator(".video-category-grid")).toHaveClass(/is-visible/);
+  expect(await page.locator(".video-category video").evaluateAll(videos => new Set(videos.map(v => (v as HTMLVideoElement).getAttribute("src"))).size)).toBe(3);
+  await expect(page.locator(".video-category video").first()).toHaveAttribute("src", "/videos/category-bridal.mp4");
   await expect(page.locator(".video-category h2").first()).toHaveCSS("writing-mode", "vertical-lr");
   await page.locator(".video-category").nth(1).scrollIntoViewIfNeeded();
   await page.waitForFunction(() => { const v = document.querySelectorAll<HTMLVideoElement>(".video-category video")[1]; return v && !v.paused && v.currentTime > 0; });
@@ -208,4 +225,37 @@ test("4K starts on mobile without interaction even with data saver, repeats and 
   expect(response.status()).toBe(206);
   expect(response.headers()["content-range"]).toMatch(/^bytes 0-1023\//);
   expect((await response.body()).length).toBe(1024);
+});
+
+
+test("home edits remove the named sections, gallery responds to hover and the footer links work", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+  await expect(page.locator(".editorial-invitation, #boutique, #your-chapter, .closing")).toHaveCount(0);
+  await expect(page.locator("#questions")).toHaveCount(1);
+  await page.locator(".inspiration-section").scrollIntoViewIfNeeded();
+  await expect(page.locator(".fluid-gallery-item")).toHaveCount(3);
+  await expect.poll(() => page.locator(".fluid-gallery-item").first().evaluate(el => Number(getComputedStyle(el).opacity))).toBe(1);
+  await expect(page.locator(".fluid-gallery-frame").first()).toHaveCSS("animation-name", "gallery-water");
+  const card = page.locator(".fluid-gallery-card").first();
+  await card.hover({ position: { x: 50, y: 80 } });
+  await expect(card).toHaveAttribute("style", /--magnetic-x/);
+  await page.locator(".inspiration-section").screenshot({ path: "/workspace/outputs/flowing-gallery.png" });
+  await page.locator(".professional-footer").scrollIntoViewIfNeeded();
+  await page.getByRole("link", { name: "Privacy & data", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Privacy & data.", exact: true })).toBeVisible();
+  await expect(page.locator(".privacy-information")).toContainText("localStorage");
+});
+
+test("homepage personalisation preview carries the name and selected gift into the studio", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".personalisation-editorial").scrollIntoViewIfNeeded();
+  await page.getByRole("group", { name: "Choose a preview keepsake" }).getByRole("button", { name: "Gift box", exact: true }).click();
+  await page.getByLabel("Try your name").fill("Amelia");
+  await expect(page.locator(".teaser-product-sculpture text")).toHaveText("Amelia");
+  await page.getByRole("link", { name: "Continue in the studio", exact: true }).click();
+  await expect(page.getByRole("combobox", { name: "Gift product", exact: true })).toHaveValue("Gift box");
+  await expect(page.getByTestId("preview-name")).toHaveText("Amelia");
+  await page.reload();
+  await expect(page.getByTestId("preview-name")).toHaveText("Amelia");
 });

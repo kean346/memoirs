@@ -203,7 +203,7 @@ export default function VideoHero() {
           </div>
         </div>
         <div className="cinema-foot">
-          <a href="#introduction">
+          <a href="#bridal-edit">
             DISCOVER THE POSSIBILITIES <ArrowDown size={14} />
           </a>
           <span key={active}>{scenes[active].mood}</span>

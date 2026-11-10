@@ -97,7 +97,7 @@ export default function RunwayLookbook({ select, page = false }: { select: (name
     return () => { disposed = true; observer.disconnect(); cancelAnimationFrame(frame); clearTimeout(timer); el.removeEventListener("wheel", wheel); document.removeEventListener("visibilitychange", start); wake.current = () => {}; };
   }, [visible, reduced, root]);
   const advance = (n: number) => { motion.current.target = Math.round(motion.current.target) + n; wake.current(); };
-  return <section ref={root} className={"runway-lookbook collection-section" + (page ? " runway-page" : "")} aria-label="Bridal runway depth lookbook">
+  return <section ref={root} id={page ? undefined : "bridal-edit"} className={"runway-lookbook collection-section" + (page ? " runway-page" : "")} aria-label="Bridal runway depth lookbook">
     <header className="runway-top"><div><span className="eyebrow">PRECIOUS MEMOIRS / THE BRIDAL EDIT</span>{page ? <h1>The collection.</h1> : <h2>Meet your next chapter.</h2>}</div><span className="runway-edition">FIVE SILHOUETTES<br />ONE PRECIOUS MEMORY</span></header>
     <div className="runway-layout">
       <div ref={stage} className={"runway-stage" + (dragging ? " is-dragging" : "")} tabIndex={0} role="group" aria-label="Drag dresses, use arrow keys or focus and scroll to explore"
